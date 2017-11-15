@@ -1,0 +1,13 @@
+{
+  "name": "test-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "async-series": "^0.0.1",
+    "express": "^4.16.2",
+    "ipfs": "^0.26.0",
+    "ipfs-api": "^15.1.0",
+    "multer": "^1.3.0"
+  }
+}
