@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import classnames from 'classnames'
 
+import NavigationBar from './navigationbar'
+
 import '../css/oswald.css'
 import '../css/open-sans.css'
 import '../css/pure-min.css'
@@ -14,11 +16,8 @@ class App extends Component {
     render() {
         const { className, ...props } = this.props;
         return(
-            <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
-        </nav>
-
+        <div className="App">
+        <NavigationBar/>
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">

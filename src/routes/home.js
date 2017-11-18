@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 import SimpleStorageContract from '../../build/contracts/SimpleStorage.json'
 import getWeb3 from '../utils/getWeb3'
+import NavigationBar from './navigationbar'
 
 import '../css/oswald.css'
 import '../css/open-sans.css'
@@ -73,10 +74,7 @@ class App extends Component {
     const { className, ...props } = this.props;
     return (
       <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
-        </nav>
-
+        <NavigationBar/>
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
