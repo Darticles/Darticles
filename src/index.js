@@ -1,8 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+
+import Home from './routes/home';
 
 ReactDOM.render(
-  <App />,
+  <BrowserRouter>
+      <div>
+          <Switch>
+              <Route exact path="/" component={Home} />
+          </Switch>
+      </div>
+  </BrowserRouter>,
   document.getElementById('root')
 );

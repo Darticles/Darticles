@@ -25,14 +25,15 @@ app.post('/files', upload.single('file'), function(req, resp){
         content: data
     }], function(err, res) {
         if (err) { throw err; }
-        resp.send('File Uploaded to ipfs');
         
+        var hashes = [];
         res.forEach(function (file) {
             if (file && file.hash) {
-              console.log('successfully stored', file.hash);
-              console.log(file.hash);
+                hashes.push(file.hash);
             }
         })
+        resp.send(hashes);
+        
     });
 });
 

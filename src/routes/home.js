@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
-import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
-import getWeb3 from './utils/getWeb3'
+import classnames from 'classnames'
 
-import './css/oswald.css'
-import './css/open-sans.css'
-import './css/pure-min.css'
-import './App.css'
+import SimpleStorageContract from '../../build/contracts/SimpleStorage.json'
+import getWeb3 from '../utils/getWeb3'
+
+import '../css/oswald.css'
+import '../css/open-sans.css'
+import '../css/pure-min.css'
+import './home.css'
 
 class App extends Component {
   constructor(props) {
@@ -68,6 +70,7 @@ class App extends Component {
   }
 
   render() {
+    const { className, ...props } = this.props;
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
