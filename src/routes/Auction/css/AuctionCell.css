@@ -1,9 +1,14 @@
 .card {
     margin: 10px;
-    background-color: rgb(235, 235, 235);
+    background-color: #f3f3f3;
     border-radius: 10px;
+    text-align: center;
 }
 
 .full-width-image {
     width: 100%;
+}
+
+.card-text {
+    padding: 5px;
 }
