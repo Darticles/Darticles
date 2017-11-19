@@ -232,7 +232,7 @@ contract Darticles {
     }
 
     function getArtwork() public view returns (uint256[]) {
-        return portfolioOf(msg.sender);
+        return portfolioOf[msg.sender];
     }
     
     // ==================================
