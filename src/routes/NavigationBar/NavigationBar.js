@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 
-import '../css/oswald.css'
-import '../css/open-sans.css'
-import '../css/pure-min.css'
-import './home.css'
-
+import '../../css/oswald.css'
+import '../../css/open-sans.css'
+import '../../css/pure-min.css'
+import '../css/root.css'
 
 class NavigationBar extends Component {
     render() {

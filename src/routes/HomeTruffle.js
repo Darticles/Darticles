@@ -3,12 +3,12 @@ import classnames from 'classnames'
 
 import SimpleStorageContract from '../../build/contracts/SimpleStorage.json'
 import getWeb3 from '../utils/getWeb3'
-import NavigationBar from './navigationbar'
+import NavigationBar from './NavigationBar/NavigationBar'
 
 import '../css/oswald.css'
 import '../css/open-sans.css'
 import '../css/pure-min.css'
-import './home.css'
+import './css/root.css'
 
 class App extends Component {
   constructor(props) {

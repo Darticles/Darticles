@@ -1,0 +1,9 @@
+.card {
+    margin: 10px;
+    background-color: rgb(235, 235, 235);
+    border-radius: 10px;
+}
+
+.full-width-image {
+    width: 100%;
+}
