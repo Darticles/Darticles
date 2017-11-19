@@ -20,6 +20,7 @@ class App extends Component {
             <div className="App">
                 <NavigationBar/>
                 <main className="container">
+                    <h1>Auctions</h1>
                     <div className="pure-g">
                         <AuctionCell/>
                         <AuctionCell/>

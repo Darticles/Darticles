@@ -3,6 +3,7 @@
     background-color: #f3f3f3;
     border-radius: 10px;
     text-align: center;
+    overflow: hidden;
 }
 
 .full-width-image {
@@ -12,3 +13,14 @@
 .card-text {
     padding: 5px;
 }
+
+p.small {
+    line-height: 50%;
+    font-size: 11px;
+}
+
+p.big {
+    line-height: 50%;
+    font-size: 14px;
+    font-weight: bold;
+} 
