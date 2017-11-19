@@ -66,8 +66,8 @@ contract Darticles {
     // This is important because we need every artwork to be unique.
     // So every artwork has an 'id' property that is equal to the 
     // number of artworks in this contract
-    uint256 artworkCount;
-    uint256 auctionsCount;
+    uint256 public artworkCount;
+    uint256 public auctionsCount;
     
     mapping(uint256 => Artwork) public artwork;         // This allows us to get an artwork from its id
     mapping(address => uint256[]) public portfolioOf;   // This allows us to get the ids of the artwork of a specific user
@@ -76,6 +76,8 @@ contract Darticles {
     mapping(uint256 => Auction) public auctionWithID;
     mapping(address => uint256[]) public auctionsOf;
     mapping(uint256 => Bid) public currentBidForAuctionWithID;
+
+    uint256[] public auctions;
     
     // ==================================
     //          EVENTS
@@ -127,11 +129,11 @@ contract Darticles {
     function addArtwork(bytes32 _imageLink, bytes32 _title, bytes32 _description) public {
         uint256 _id = ++artworkCount;
         var _artwork = Artwork({
-            creator     : msg.sender, 
-            owner       : msg.sender, 
-            imageLink   : _imageLink, 
-            title       : _title, 
-            description : _description
+            creator         : msg.sender, 
+            owner           : msg.sender, 
+            imageLink       : _imageLink, 
+            title           : _title, 
+            description     : _description
         });
         artwork[_id] = _artwork;
         portfolioOf[msg.sender].push(_id);
@@ -170,7 +172,7 @@ contract Darticles {
         senderHasArtworkWithID(_artworkID)
     {
         var auction = Auction({
-            owner           : msg.sender,
+            owner: msg.sender,
             artworkID       : _artworkID,
             initialPrice    : _initialPrice,
             endTimestamp    : _endTimestamp,
@@ -179,6 +181,7 @@ contract Darticles {
         
         uint256 auctionID = ++auctionsCount;
         currentBidForAuctionWithID[auctionID] = createEmptyBid();
+        auctions.push(auctionID);
         auctionsOf[msg.sender].push(auctionID);
         auctionWithID[auctionID] = auction;
     }
@@ -222,6 +225,14 @@ contract Darticles {
     */
     function getProfile() public view returns (Profile) {
         return profileOf[msg.sender];
+    }
+
+    function getAuctions() public view returns (uint256[]) {
+        return auctions;
+    }
+
+    function getArtwork() public view returns (uint256[]) {
+        return portfolioOf(msg.sender);
     }
     
     // ==================================

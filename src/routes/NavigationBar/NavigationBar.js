@@ -9,7 +9,9 @@ class NavigationBar extends Component {
     render() {
         return(       
             <nav className="navbar pure-menu pure-menu-horizontal">
-                <a href="#" className="pure-menu-heading pure-menu-link">Darticles</a>
+                <a href="/" className="pure-menu-heading pure-menu-link">Darticles</a>
+                <a href="/portfolio" className="pure-menu-heading pure-menu-link">Portfolio</a>
+                <a href="/auctions" className="pure-menu-heading pure-menu-link">Auctions</a>
             </nav>
         )
     }
