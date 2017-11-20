@@ -62,20 +62,31 @@ export default class Portfolio extends Component {
         })
     }
 
+    artworkCellPressed(event) {
+        alert("Does it work?")
+    }
+
+    newArtworkCellPressed(event) {
+        document.location.href = "/portfolio/new"
+    }
+
     render() {
-        const artworkCells = this.state.artwork.map((artworkItem) => {
+        const artworkCells = this.state.artwork.map((artworkItem, index) => {
             return (
-                <ArtworkCell artwork={artworkItem} />
+                <ArtworkCell artwork={artworkItem} key={index} onClick={this.artworkCellPressed.bind(this)} />
             )
         })
 
         const addNewArtworkCell = (
-            <ArtworkCell artwork={
-                { 
-                    imageLink   : "http://www.endlessicons.com/wp-content/uploads/2012/12/add-icon-614x460.png", 
-                    title       : "Add new",
-                }
-            } />
+            <ArtworkCell 
+                artwork={
+                    { 
+                        imageLink   : "http://www.endlessicons.com/wp-content/uploads/2012/12/add-icon-614x460.png", 
+                        title       : "Add new",
+                    }
+                } 
+                onClick={this.newArtworkCellPressed.bind(this)} 
+            />
         )
 
         return (

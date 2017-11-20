@@ -16,7 +16,7 @@ export default class ArtworkCell extends Component {
         const { imageLink, title, subtitle } = artwork
 
         return (
-            <div className="pure-u-1-4">
+            <div className="pure-u-1-4" onClick={this.props.onClick}>
                 <div className="card">
                     <img className="full-width-image" src={imageLink} />
                     <div className="card-text">
