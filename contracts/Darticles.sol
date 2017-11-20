@@ -69,21 +69,21 @@ contract Darticles {
     uint256 public artworkCount;
     uint256 public auctionsCount;
     
-    mapping(uint256 => Artwork) public artwork;         // This allows us to get an artwork from its id
-    mapping(address => uint256[]) public portfolioOf;   // This allows us to get the ids of the artwork of a specific user
-    mapping(address => Profile) public profileOf;       // Profiles for each address
-    mapping(address => uint256) public refundsFor;      // Ether that people can withdraw
-    mapping(uint256 => Auction) public auctionWithID;
-    mapping(address => uint256[]) public auctionsOf;
-    mapping(uint256 => Bid) public currentBidForAuctionWithID;
+    mapping(uint256 => Artwork) public artwork;                 // This allows us to get an artwork from its id
+    mapping(address => uint256[]) public portfolioOf;           // This allows us to get the ids of the artwork of a specific user
+    mapping(address => Profile) public profileOf;               // Profiles for each address
+    mapping(address => uint256) public refundsFor;              // Ether that people can withdraw
+    mapping(uint256 => Auction) public auctionWithID;           //
+    mapping(address => uint256[]) public auctionsOf;            //
+    mapping(uint256 => Bid) public currentBidForAuctionWithID;  //
 
-    uint256[] public auctions;
+    uint256[] public auctions;                                  //
     
     // ==================================
     //          EVENTS
     // ==================================
     
-    event LogNewBet(uint256 auctionID, address sender, uint256 value);
+    event LogNewBid(uint256 auctionID, address sender, uint256 value);
     event LogOpenedAuction(uint256 auctionID);
     event LogEndedAuction(uint256 auctionID);
     
@@ -91,9 +91,7 @@ contract Darticles {
     //          CONSTRUCTORS
     // ==================================
     
-    function Darticles() public {
-        
-    }
+    function Darticles() public {}
     
     // ==================================
     //          MUTATING FUNCTIONS
@@ -184,6 +182,7 @@ contract Darticles {
         auctions.push(auctionID);
         auctionsOf[msg.sender].push(auctionID);
         auctionWithID[auctionID] = auction;
+        LogOpenedAuction(auctionID);
     }
     
     function endAuction(uint256 _auctionID) public {
@@ -198,6 +197,8 @@ contract Darticles {
         var _artwork = artwork[auction.artworkID];
         refundsFor[_artwork.creator] = bidValue * 15 / 100;
         refundsFor[_artwork.owner] = bidValue * 85 / 100;
+
+        LogEndedAuction(_auctionID);
     }
     
     function makeBid(uint256 _auctionID) public payable {
@@ -214,6 +215,7 @@ contract Darticles {
         });
         
         currentBidForAuctionWithID[_auctionID] = bid;
+        LogNewBid(_auctionID, msg.sender, msg.value);
     }
     
     // ==================================
