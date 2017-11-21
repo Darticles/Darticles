@@ -225,8 +225,8 @@ contract Darticles {
     /**
         Returns the profile of the caller.
     */
-    function getProfile() public view returns (Profile) {
-        return profileOf[msg.sender];
+    function getProfile() public view returns (bytes32, bytes32, bytes32, bytes32) {
+        return (profileOf[msg.sender].imageLink, profileOf[msg.sender].firstName, profileOf[msg.sender].lastName, profileOf[msg.sender].nickName);
     }
 
     function getAuctions() public view returns (uint256[]) {
