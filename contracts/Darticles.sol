@@ -66,8 +66,8 @@ contract Darticles {
     // This is important because we need every artwork to be unique.
     // So every artwork has an 'id' property that is equal to the 
     // number of artworks in this contract
-    uint256 public artworkCount;
-    uint256 public auctionsCount;
+    uint256 public artworkCount = 0;
+    uint256 public auctionsCount = 0;
     
     mapping(uint256 => Artwork) public artwork;                 // This allows us to get an artwork from its id
     mapping(address => uint256[]) public portfolioOf;           // This allows us to get the ids of the artwork of a specific user
@@ -77,7 +77,8 @@ contract Darticles {
     mapping(address => uint256[]) public auctionsOf;            //
     mapping(uint256 => Bid) public currentBidForAuctionWithID;  //
 
-    uint256[] public auctions;                                  //
+    uint256[] public activeAuctions;                                  //
+    uint256[] public endedAuctions;
     
     // ==================================
     //          EVENTS
@@ -119,13 +120,14 @@ contract Darticles {
     */
     function withdraw(uint256 _amount) public returns (bool) {
         require(refundsFor[msg.sender] >= _amount);
-        msg.sender.transfer(_amount);
         refundsFor[msg.sender] -= _amount;
+        msg.sender.transfer(_amount);
         return true;
     }
     
+    // OK
     function addArtwork(bytes32 _imageLink, bytes32 _title, bytes32 _description) public {
-        uint256 _id = ++artworkCount;
+        uint256 _id = artworkCount++;
         var _artwork = Artwork({
             creator         : msg.sender, 
             owner           : msg.sender, 
@@ -137,6 +139,7 @@ contract Darticles {
         portfolioOf[msg.sender].push(_id);
     }
     
+
     function transferArtwork(address _to, uint256 _id) public {
         uint256 index = getIndexForArtworkInSenderPortfolio(_id);
         require (index != portfolioOf[msg.sender].length); // The artwork was not found
@@ -146,9 +149,9 @@ contract Darticles {
     }
     
     function getIndexForArtworkInSenderPortfolio(uint256 _id) private view returns (uint256) {
-        var idsForSender = portfolioOf[msg.sender];
+        var idsForSender = portfolioOf[msg.sender]; // Los ids de las obras del sender
         uint256 index = 0;
-        while (idsForSender[index] != _id && index < idsForSender.length) {
+        while (idsForSender[index] != _id && index < idsForSender.length) { // aca recorro los ids de las obras
             index++;
         }
         return index;
@@ -170,23 +173,35 @@ contract Darticles {
         senderHasArtworkWithID(_artworkID)
     {
         var auction = Auction({
-            owner: msg.sender,
+            owner           : msg.sender,
             artworkID       : _artworkID,
             initialPrice    : _initialPrice,
             endTimestamp    : _endTimestamp,
             state           : AuctionState.Active
         });
         
-        uint256 auctionID = ++auctionsCount;
+        uint256 auctionID = auctionsCount++;
         currentBidForAuctionWithID[auctionID] = createEmptyBid();
-        auctions.push(auctionID);
+        activeAuctions.push(auctionID);
         auctionsOf[msg.sender].push(auctionID);
         auctionWithID[auctionID] = auction;
         LogOpenedAuction(auctionID);
     }
+
+    function getIndexForAuctionInActiveArray(uint256 _auctionID) private view returns (uint256) {
+        uint256 index = 0;
+        while (activeAuctions[index] != _auctionID && index < activeAuctions.length) {
+            index++;
+        }
+        return index;
+    }
     
     function endAuction(uint256 _auctionID) public {
         var auction = auctionWithID[_auctionID];
+
+        uint256 index = getIndexForAuctionInActiveArray(_auctionID);
+        require(index != activeAuctions.length); 
+
         require(currentBidForAuctionWithID[_auctionID].sender == msg.sender);
         require(auction.state == AuctionState.Active);
         require(now > auction.endTimestamp);
@@ -194,9 +209,13 @@ contract Darticles {
         
         var bidValue = currentBidForAuctionWithID[_auctionID].value;
         
+        endedAuctions.push(_auctionID);
+        delete(activeAuctions[index]);
+
         var _artwork = artwork[auction.artworkID];
         refundsFor[_artwork.creator] = bidValue * 15 / 100;
         refundsFor[_artwork.owner] = bidValue * 85 / 100;
+        transferArtwork(msg.sender, auction.artworkID);
 
         LogEndedAuction(_auctionID);
     }
@@ -229,11 +248,15 @@ contract Darticles {
         return profileOf[msg.sender];
     }
 
-    function getAuctions() public view returns (uint256[]) {
-        return auctions;
+    function getActiveAuctions() public view returns (uint256[]) {
+        return activeAuctions;
     }
 
-    function getArtwork() public view returns (uint256[]) {
+    function getEndedAuctions() public view returns (uint256[]) {
+        return endedAuctions;
+    }
+
+    function getPortfolio() public view returns (uint256[]) {
         return portfolioOf[msg.sender];
     }
     
