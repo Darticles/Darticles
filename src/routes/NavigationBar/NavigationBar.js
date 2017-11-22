@@ -12,6 +12,7 @@ class NavigationBar extends Component {
                 <a href="/" className="pure-menu-heading pure-menu-link">Darticles</a>
                 <a href="/portfolio" className="pure-menu-heading pure-menu-link">Portfolio</a>
                 <a href="/auctions" className="pure-menu-heading pure-menu-link">Auctions</a>
+                <a href="/profile" className="pure-menu-heading pure-menu-link">Profile</a>
             </nav>
         )
     }
