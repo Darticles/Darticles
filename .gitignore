@@ -59,3 +59,6 @@ typings/
 
 backend-ipfs/files
 backend-ipfs/node_modules
+
+# Truffle artifacts
+build/
