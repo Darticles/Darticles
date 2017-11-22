@@ -248,12 +248,28 @@ contract Darticles {
         return (profileOf[msg.sender].imageLink, profileOf[msg.sender].firstName, profileOf[msg.sender].lastName, profileOf[msg.sender].nickName);
     }
 
+    function getAuctionWithID(uint256 _auctionID) public view returns (bytes32, uint256, uint256, uint256, bytes32) {
+        var auction = auctionWithID[_auctionID];
+        bytes32 auctionState = "";
+        if (auction.state == AuctionState.Active) {
+            auctionState = "Active";
+        } else {
+            auctionState = "Ended";
+        }
+        return (bytes32(auction.owner), auction.artworkID, auction.initialPrice, auction.endTimestamp, auctionState);
+    }
+
     function getActiveAuctions() public view returns (uint256[]) {
         return activeAuctions;
     }
 
     function getEndedAuctions() public view returns (uint256[]) {
         return endedAuctions;
+    }
+
+    function getArtworkWithID(uint256 _artworkID) public view returns (bytes32, bytes32, bytes32, bytes32, bytes32) {
+        var _artwork = artwork[_artworkID];
+        return (bytes32(_artwork.creator), bytes32(_artwork.owner), _artwork.imageLink, _artwork.title, _artwork.description);
     }
 
     function getPortfolio() public view returns (uint256[]) {

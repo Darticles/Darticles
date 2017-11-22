@@ -7,6 +7,7 @@ import Uploader from './routes/upload';
 import AuctionHome from './routes/Auction/HomeAuction';
 import PortfolioHome from './routes/Portfolio/Portfolio';
 import NewArtwork from './routes/NewArtwork/NewArtwork';
+import Profile from './routes/Profile/Profile'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -17,6 +18,7 @@ ReactDOM.render(
               <Route path="/auctions" component={AuctionHome} />
               <Route exact path="/portfolio" component={PortfolioHome} />
               <Route path="/portfolio/new" component={NewArtwork} />
+              <Route path="/profile" component={Profile} />
           </Switch>
       </div>
   </BrowserRouter>,
