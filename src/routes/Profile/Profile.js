@@ -26,16 +26,39 @@ export default class Profile extends Component {
     }
 
     onSubmitPressed() {
+        const { image, firstName, lastName, nickName } = this.state
+        if (! (image && firstName && lastName)) { return }
 
+        var formData = new FormData();
+        formData.append("file", this.state.image)
+
+        axios
+            .post('http://localhost:3000/files', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then((response) => {
+            const fileID = response.data[0]
+            if (fileID) {
+                console.log(fileID) 
+                return this.state.darticlesInstance.addArtwork(fileID, "titulo1", "description1", { from : this.state.defaultAccount }) 
+            }
+            })
+            .then((algo) => {
+            document.location="/portfolio"                        
+            })    
+            .catch(function (error) {
+            console.log(error);
+            });    
     }
 
     onTextChanged(key) {
         return ((event) => {
-            console.log(`Key => ${key}. Text => ${event.target.value}`)
             this.setState({
                 ...this.state,
                 [key]: event.target.value
-            });
+            })
         })
     }
 
