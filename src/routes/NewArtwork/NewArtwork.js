@@ -49,8 +49,6 @@ export default class NewArtwork extends Component {
             defaultAccount,
             darticlesInstance,
         })
-    
-        // this.loadAuctions()
     }
 
     componentWillMount() {
@@ -87,10 +85,12 @@ export default class NewArtwork extends Component {
                 const fileID = response.data[0]
                 if (fileID) {
                     console.log(fileID) 
-                    this.state.darticlesInstance.addArtwork.call(fileID, "titulo1", "description1", { from : this.state.defaultAccount })           
-                    document.location="/portfolio"
+                    return this.state.darticlesInstance.addArtwork(fileID, "titulo1", "description1", { from : this.state.defaultAccount }) 
                 }
               })
+              .then((algo) => {
+                document.location="/portfolio"                        
+              })    
               .catch(function (error) {
                 console.log(error);
               });      
