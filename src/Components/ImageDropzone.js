@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Dropzone from 'react-dropzone'
 
+import './Dropzone.css'
+
 export default class ImageDropzone extends Component {
     constructor() {
       super()
@@ -13,6 +15,7 @@ export default class ImageDropzone extends Component {
         <section>
           <div className="dropzone">
             <Dropzone
+              className="dropzone-style"
               accept="image/jpeg, image/png"
               onDrop={(accepted, rejected) => { 
                 onImageSelected(accepted[0])
