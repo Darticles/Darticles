@@ -79,6 +79,8 @@ contract Darticles {
 
     uint256[] public activeAuctions;                                  //
     uint256[] public endedAuctions;
+
+    address owner;
     
     // ==================================
     //          EVENTS
@@ -92,7 +94,9 @@ contract Darticles {
     //          CONSTRUCTORS
     // ==================================
     
-    function Darticles() public {}
+    function Darticles() public {
+        owner = msg.sender;
+    }
     
     // ==================================
     //          MUTATING FUNCTIONS
@@ -213,8 +217,9 @@ contract Darticles {
         delete(activeAuctions[index]);
 
         var _artwork = artwork[auction.artworkID];
-        refundsFor[_artwork.creator] = bidValue * 15 / 100;
+        refundsFor[_artwork.creator] = bidValue * 10 / 100;
         refundsFor[_artwork.owner] = bidValue * 85 / 100;
+        refundsFor[owner] = bidValue * 5 / 100;
         transferArtwork(msg.sender, auction.artworkID);
 
         LogEndedAuction(_auctionID);

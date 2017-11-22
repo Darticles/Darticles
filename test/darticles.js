@@ -25,7 +25,7 @@ contract('Darticles', (accounts) => {
         const defaultAccount = accounts[0]
         const artworkIDs = await darticlesInstance.getPortfolio.call({from: defaultAccount})
         console.log(`Funca? ids: ${artworkIDs}`)
-        const artworks = await Promise.all(artworkIDs.map((id) => darticlesInstance.artwork.call(id)))\
+        const artworks = await Promise.all(artworkIDs.map((id) => darticlesInstance.artwork.call(id)))//
         // SON ADDRESS ?? :|
         console.log(`Artworks: ${artworks.map((artwork) => (artwork[0]))}`)
         assert(true, true, "It should work")
