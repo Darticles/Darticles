@@ -19,6 +19,7 @@ import '../../css/oswald.css'
 import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import '../css/root.css'
+// import { read } from '../../../../../../Library/Caches/typescript/2.6/node_modules/@types/graceful-fs';
 
 export default class Portfolio extends Component {
 
@@ -31,7 +32,49 @@ export default class Portfolio extends Component {
     }
 
     componentWillMount() {
+        this.initialize().then(() => {
+            return this.getPortfolio()
+        })
+        .then((portfolio) => {
+            const darticlesInstance = this.state.darticlesInstance
+            return Promise.all((portfolio[0].map((item) => item.c[0])).map((id) => darticlesInstance.getArtworkWithID.call(id, { from : this.state.defaultAccount })))
+            // console.log(portfolio)
+        })
+        .then((artworks) => {
+            console.log(artworks)
+            // this.setState({
+            //     ...this.state,
+            //     ready : true,
+            // })    
+        })
+        .catch((error) => {
+            console.log(error)
+        })
         this.loadSampleArtwork()
+    }
+
+    async getPortfolio() {
+        return this.state.darticlesInstance.getPortfolio.call({ from : this.state.defaultAccount })
+    }
+
+    async initialize() {
+        const { web3 } = await getWeb3
+    
+        // Create voting entity from contract abi
+        const darticles = Contract(Darticles)
+        darticles.setProvider(web3.currentProvider)
+    
+        const accounts = await promisify(web3.eth.getAccounts)
+        const defaultAccount = accounts[0]
+    
+        const darticlesInstance = await darticles.deployed()
+    
+        this.setState({
+            ...this.state,
+            web3,
+            defaultAccount,
+            darticlesInstance,
+        })
     }
 
     loadSampleArtwork() {

@@ -66,7 +66,7 @@ contract Darticles {
     // This is important because we need every artwork to be unique.
     // So every artwork has an 'id' property that is equal to the 
     // number of artworks in this contract
-    uint256 public artworkCount = 0;
+    uint256 public artworkCount = 15;
     uint256 public auctionsCount = 0;
     
     mapping(uint256 => Artwork) public artwork;                 // This allows us to get an artwork from its id
@@ -267,9 +267,9 @@ contract Darticles {
         return endedAuctions;
     }
 
-    function getArtworkWithID(uint256 _artworkID) public view returns (bytes32, bytes32, bytes32, bytes32, bytes32) {
+    function getArtworkWithID(uint256 _artworkID) public view returns (bytes32) {
         var _artwork = artwork[_artworkID];
-        return (bytes32(_artwork.creator), bytes32(_artwork.owner), _artwork.imageLink, _artwork.title, _artwork.description);
+        return _artwork.imageLink;
     }
 
     function getPortfolio() public view returns (uint256[]) {

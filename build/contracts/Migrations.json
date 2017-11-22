@@ -834,9 +834,14 @@
     "1511391295207": {
       "events": {},
       "links": {},
-      "address": "0xfb5eeabb62ffe61523911ef4a94eab9d96638b6f"
+      "address": "0x5b45596c2d5543fbb116ea38006792568e4c287e"
+    },
+    "1511393802178": {
+      "events": {},
+      "links": {},
+      "address": "0x4293b99fde6e8716d989f9bdb6e1fbe884110944"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-11-22T22:55:54.895Z"
+  "updatedAt": "2017-11-22T23:37:47.574Z"
 }
