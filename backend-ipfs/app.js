@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post('/files', upload.single('file'), function(req, resp){
+    console.log(req)
     const file = req.file;
     // res.download(file.path);
     var data = fs.readFileSync(file.path); 
