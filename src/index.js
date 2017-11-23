@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Router from './Router'
+import RouterComponent from './router-component'
 
 ReactDOM.render(
-  <Router />,
-  document.getElementById('root')
+    <RouterComponent/>,
+    document.getElementById('root')  
 );
