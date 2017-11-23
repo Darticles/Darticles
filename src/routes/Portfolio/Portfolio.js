@@ -11,15 +11,12 @@ import ArtworkCell from './ArtworkCell'
 import Darticles from '../../../build/contracts/Darticles.json'
 
 // Utils
-import getWeb3 from '../../utils/getWeb3'
 import promisify from '../../utils/promisify'
 
 // CSS Styles
 import '../../css/oswald.css'
 import '../../css/open-sans.css'
 import '../../css/pure-min.css'
-import '../css/root.css'
-// import { read } from '../../../../../../Library/Caches/typescript/2.6/node_modules/@types/graceful-fs';
 
 export default class Portfolio extends Component {
 
@@ -32,78 +29,57 @@ export default class Portfolio extends Component {
     }
 
     componentWillMount() {
-        this.initialize().then(() => {
-            return this.getPortfolio()
-        })
+        this.getPortfolio()
         .then((portfolio) => {
-            const darticlesInstance = this.state.darticlesInstance
-            return Promise.all((portfolio[0].map((item) => item.c[0])).map((id) => darticlesInstance.getArtworkWithID.call(id, { from : this.state.defaultAccount })))
+            const darticlesInstance = this.props.darticlesInstance
+            const web3 = this.props.web3
+            return Promise.all((portfolio.map((item) => new web3.BigNumber(item))).map((id) => darticlesInstance.getArtworkWithID.call(id, { from : this.props.defaultAccount })))
             // console.log(portfolio)
         })
         .then((artworks) => {
             console.log(artworks)
-            // this.setState({
-            //     ...this.state,
-            //     ready : true,
-            // })    
+            this.setState({
+                ...this.state,
+                ready : true,
+            })    
         })
         .catch((error) => {
             console.log(error)
         })
-        this.loadSampleArtwork()
+        // this.loadSampleArtwork()
     }
 
     async getPortfolio() {
-        return this.state.darticlesInstance.getPortfolio.call({ from : this.state.defaultAccount })
+        return this.props.darticlesInstance.getPortfolio.call({ from : this.props.defaultAccount })
     }
 
-    async initialize() {
-        const { web3 } = await getWeb3
-    
-        // Create voting entity from contract abi
-        const darticles = Contract(Darticles)
-        darticles.setProvider(web3.currentProvider)
-    
-        const accounts = await promisify(web3.eth.getAccounts)
-        const defaultAccount = accounts[0]
-    
-        const darticlesInstance = await darticles.deployed()
-    
-        this.setState({
-            ...this.state,
-            web3,
-            defaultAccount,
-            darticlesInstance,
-        })
-    }
-
-    loadSampleArtwork() {
-        this.setState({
-            ...this.state,
-            artwork: [
-                { 
-                    imageLink   : "https://i.pinimg.com/originals/02/f9/12/02f912e15e0417739cb7ab903681862d.jpg", 
-                    title       : "The lion",
-                },
-                { 
-                    imageLink   : "https://i.pinimg.com/736x/e0/3b/d0/e03bd0c4c05e76ae8605462336b40e7a--graphic-design-studios-art-design.jpg", 
-                    title       : "The head",
-                },
-                { 
-                    imageLink   : "https://i.pinimg.com/originals/8d/1a/fd/8d1afdf0c54bb93d11d553306c03cd34.jpg", 
-                    title       : "The bird",
-                },
-                { 
-                    imageLink   : "https://www.classboat.com/AdminImages/SubCategory/078907Digital-Art.jpg", 
-                    title       : "The planet",
-                },
-                { 
-                    imageLink   : "https://www.demilked.com/magazine/wp-content/uploads/2017/07/pop-culture-digital-art-filip-hodas-11.jpg", 
-                    title       : "The pacman",
-                },
-            ],
-        })
-    }
+    // loadSampleArtwork() {
+    //     this.setState({
+    //         ...this.state,
+    //         artwork: [
+    //             { 
+    //                 imageLink   : "https://i.pinimg.com/originals/02/f9/12/02f912e15e0417739cb7ab903681862d.jpg", 
+    //                 title       : "The lion",
+    //             },
+    //             { 
+    //                 imageLink   : "https://i.pinimg.com/736x/e0/3b/d0/e03bd0c4c05e76ae8605462336b40e7a--graphic-design-studios-art-design.jpg", 
+    //                 title       : "The head",
+    //             },
+    //             { 
+    //                 imageLink   : "https://i.pinimg.com/originals/8d/1a/fd/8d1afdf0c54bb93d11d553306c03cd34.jpg", 
+    //                 title       : "The bird",
+    //             },
+    //             { 
+    //                 imageLink   : "https://www.classboat.com/AdminImages/SubCategory/078907Digital-Art.jpg", 
+    //                 title       : "The planet",
+    //             },
+    //             { 
+    //                 imageLink   : "https://www.demilked.com/magazine/wp-content/uploads/2017/07/pop-culture-digital-art-filip-hodas-11.jpg", 
+    //                 title       : "The pacman",
+    //             },
+    //         ],
+    //     })
+    // }
 
     artworkCellPressed(event) {
         alert("Does it work?")
@@ -133,13 +109,10 @@ export default class Portfolio extends Component {
         )
 
         return (
-            <div className="App">
-                <NavigationBar/>
-                <main className="container">
-                    <h1>Portfolio</h1>
+            <div>
+                <h1>Portfolio</h1>
                     { artworkCells }
                     { addNewArtworkCell }
-                </main>
             </div>
         )
     }

@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import NavigationBar from '../NavigationBar/NavigationBar'
 import ImageDropzone from '../../Components/ImageDropzone'
+import axios from 'axios'
 
 // CSS Styles
 import '../../css/oswald.css'
 import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import '../css/root.css'
+import './Profile.css'
 
 export default class Profile extends Component {
 
@@ -46,10 +48,10 @@ export default class Profile extends Component {
             }
             })
             .then((algo) => {
-            document.location="/portfolio"                        
+                document.location="/portfolio"                        
             })    
             .catch(function (error) {
-            console.log(error);
+                console.log(error);
             });    
     }
 
@@ -69,16 +71,22 @@ export default class Profile extends Component {
             <div className="App">
                 <NavigationBar/>
                 <main className="container">
-                    <div className="pure-u-1-5"></div>
-                    <div className="pure-u-3-5 pure-form">
-                        <h1>Profile for {firstName} {lastName}</h1>
-                        <ImageDropzone onImageSelected={this.onImageSelected.bind(this)} image={image}/>
-                        <input style={{marginTop: "10px"}} className="full-width" placeholder="First Name" onChange={this.onTextChanged("firstName").bind(this)}/>
-                        <input style={{marginTop: "10px"}} className="full-width" placeholder="Last Name" onChange={this.onTextChanged("lastName").bind(this)}/>
-                        <input style={{marginTop: "10px"}} className="full-width" placeholder="Nickname" onChange={this.onTextChanged("nickName").bind(this)}/>
-                        <button className="pure-button pure-button-primary" style={{marginTop: "1.2em"}} onClick={this.onSubmitPressed.bind(this)}>Submit</button>
+                <h1>Profile for {firstName} {lastName}</h1>
+                    <div className="pure-g">
+                        <div className="pure-u-1-5"></div>
+                        <div className="pure-u-1-5">
+                                <div className="padding-image-drop">
+                                    <ImageDropzone onImageSelected={this.onImageSelected.bind(this)} image={image}/>
+                                </div>
+                            </div>
+                            <div className="pure-u-2-5 pure-form">
+                                <input style={{marginTop: "10px"}} className="full-width" placeholder="First Name" onChange={this.onTextChanged("firstName").bind(this)}/>
+                                <input style={{marginTop: "10px"}} className="full-width" placeholder="Last Name" onChange={this.onTextChanged("lastName").bind(this)}/>
+                                <input style={{marginTop: "10px"}} className="full-width" placeholder="Nickname" onChange={this.onTextChanged("nickName").bind(this)}/>
+                                <button className="pure-button pure-button-primary" style={{marginTop: "1.2em"}} onClick={this.onSubmitPressed.bind(this)}>Submit</button>
+                            </div>
+                        <div className="pure-u-1-5"></div>
                     </div>
-                    <div className="pure-u-1-5"></div>
                 </main>
             </div>
         )    
