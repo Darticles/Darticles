@@ -35,8 +35,8 @@ contract('Darticles', (accounts) => {
 
         const artwork = artworksInBytes32[0]
 
-        const creator       = web3.toUtf8(artwork[0])
-        const owner         = web3.toUtf8(artwork[1])
+        const creator       = artwork[0]
+        const owner         = artwork[1]
         const imageLink     = web3.toUtf8(artwork[2])
         const title         = web3.toUtf8(artwork[3])
         const description   = web3.toUtf8(artwork[4])
