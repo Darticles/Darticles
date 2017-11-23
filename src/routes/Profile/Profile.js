@@ -26,31 +26,31 @@ export default class Profile extends Component {
     }
 
     onSubmitPressed() {
-        const { image, firstName, lastName, nickName } = this.state
-        if (! (image && firstName && lastName)) { return }
+        // const { image, firstName, lastName, nickName } = this.state
+        // if (! (image && firstName && lastName)) { return }
 
-        var formData = new FormData();
-        formData.append("file", this.state.image)
+        // var formData = new FormData();
+        // formData.append("file", this.state.image)
 
-        axios
-            .post('http://localhost:3000/files', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            .then((response) => {
-            const fileID = response.data[0]
-            if (fileID) {
-                console.log(fileID) 
-                return this.state.darticlesInstance.addArtwork(fileID, "titulo1", "description1", { from : this.state.defaultAccount }) 
-            }
-            })
-            .then((algo) => {
-            document.location="/portfolio"                        
-            })    
-            .catch(function (error) {
-            console.log(error);
-            });    
+        // axios
+        //     .post('http://localhost:3000/files', formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data'
+        //         }
+        //     })
+        //     .then((response) => {
+        //     const fileID = response.data[0]
+        //     if (fileID) {
+        //         console.log(fileID) 
+        //         return this.state.darticlesInstance.addArtwork(fileID, "titulo1", "description1", { from : this.state.defaultAccount }) 
+        //     }
+        //     })
+        //     .then((algo) => {
+        //     document.location="/portfolio"                        
+        //     })    
+        //     .catch(function (error) {
+        //     console.log(error);
+        //     });    
     }
 
     onTextChanged(key) {
@@ -64,6 +64,8 @@ export default class Profile extends Component {
 
     render() {
         const { image, firstName, lastName, nickName } = this.state
+        const title = this.props.title
+
 
         return (
             <div className="App">
@@ -71,7 +73,7 @@ export default class Profile extends Component {
                 <main className="container">
                     <div className="pure-u-1-5"></div>
                     <div className="pure-u-3-5 pure-form">
-                        <h1>Profile for {firstName} {lastName}</h1>
+                        <h1>{title || "Profile"} for {firstName} {lastName}</h1>
                         <ImageDropzone onImageSelected={this.onImageSelected.bind(this)} image={image}/>
                         <input style={{marginTop: "10px"}} className="full-width" placeholder="First Name" onChange={this.onTextChanged("firstName").bind(this)}/>
                         <input style={{marginTop: "10px"}} className="full-width" placeholder="Last Name" onChange={this.onTextChanged("lastName").bind(this)}/>

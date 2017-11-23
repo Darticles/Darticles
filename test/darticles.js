@@ -14,37 +14,38 @@ contract('Darticles', (accounts) => {
         assert.equal(true, true, "It should work")
     })
 
-    it('Should add an artwork without crashing', async function() {
+    it('Should get an artwork that I have added', async function() {
         const darticlesInstance = await Darticles.deployed()
-        const imageLink = "haaseiondq2189e31"
-        const title = "The best artwork"
-        const description = "Digital photography"
-        await darticlesInstance.addArtwork(imageLink, title, description, { from: accounts[0] })
-        await darticlesInstance.addArtwork(imageLink, title, description, { from: accounts[0] })
-        await darticlesInstance.addArtwork(imageLink, title, description, { from: accounts[0] })
         const defaultAccount = accounts[0]
-        const artworkIDs = await darticlesInstance.getPortfolio.call({from: defaultAccount})
-        console.log(`Funca? ids: ${artworkIDs}`)
-        const artworks = await Promise.all(artworkIDs.map((id) => darticlesInstance.getArtworkWithID.call(id)))//
-        // SON ADDRESS ?? :|
-        console.log(`Artworks: ${artworks.map((artwork) => (artwork[0]))}`)
-        assert(true, true, "It should work")
+
+        const imageLink1 = "imageLink"
+        const title1 = "Title"
+        const description1 = "Description"
+        await darticlesInstance.addArtwork(imageLink1, title1, description1, { from: defaultAccount })
+
+        const portfolio = await darticlesInstance.getPortfolio.call({from: defaultAccount})
+        const ids = portfolio.map((id) => new web3.BigNumber(id))
+    
+        assert.equal(ids.length, 1, "An artwork should has been added")
+        assert.equal(ids[0], 0, "Artwork ids should start by 0")
+
+        const artworksInBytes32 = await Promise.all(ids.map((id) => darticlesInstance.getArtworkWithID.call(id, { from: defaultAccount })))
+
+        assert.equal(artworksInBytes32.length, 1, "There  one only artwork")
+
+        const artwork = artworksInBytes32[0]
+
+        const creator       = web3.toUtf8(artwork[0])
+        const owner         = web3.toUtf8(artwork[1])
+        const imageLink     = web3.toUtf8(artwork[2])
+        const title         = web3.toUtf8(artwork[3])
+        const description   = web3.toUtf8(artwork[4])
+
+        assert.equal(creator, defaultAccount, "The creator is not the default account")
+        assert.equal(owner, defaultAccount, "The owner is not the default account")
+        assert.equal(imageLink, imageLink1, "The image link was saved incorrectly")
+        assert.equal(title, title1, "The title was saved incorrectly")
+        assert.equal(description, description1, "The description was saved incorrectly")
     })
     
 })
-
-async function mineBlock() {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.sendAsync({
-            jsonrpc: "2.0",
-            method: "evm_mine",
-            id: 12345
-          }, function(err, result) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(result)
-            }
-        })
-    })
-} 
