@@ -12,7 +12,7 @@ contract Darticles {
         an art collectionist
     */
     struct Profile {
-        bytes32 imageLink;   // IPFS link
+        string imageLink;   // IPFS link
         bytes32 firstName;
         bytes32 lastName;
         bytes32 nickName;
@@ -35,7 +35,7 @@ contract Darticles {
         // The owner can change because the artwork can be transfered.
         address owner;
         
-        bytes32 imageLink;      // IPFS link
+        string imageLink;      // IPFS link
         bytes32 title;          // The name of this piece
         bytes32 description;    // Some explanatory notes
     }
@@ -107,7 +107,7 @@ contract Darticles {
     */
     function setProfile 
     (
-        bytes32 _profileImageLink, 
+        string _profileImageLink, 
         bytes32 _firstName, 
         bytes32 _lastName, 
         bytes32 _nickName
@@ -130,7 +130,7 @@ contract Darticles {
     }
     
     // OK
-    function addArtwork(bytes32 _imageLink, bytes32 _title, bytes32 _description) public {
+    function addArtwork(string _imageLink, bytes32 _title, bytes32 _description) public {
         uint256 _id = artworkCount++;
         var _artwork = Artwork({
             creator         : msg.sender, 
@@ -249,7 +249,7 @@ contract Darticles {
     /**
         Returns the profile of the caller.
     */
-    function getProfile() public view returns (bytes32, bytes32, bytes32, bytes32) {
+    function getProfile() public view returns (string, bytes32, bytes32, bytes32) {
         return (profileOf[msg.sender].imageLink, profileOf[msg.sender].firstName, profileOf[msg.sender].lastName, profileOf[msg.sender].nickName);
     }
 
@@ -272,7 +272,7 @@ contract Darticles {
         return endedAuctions;
     }
 
-    function getArtworkWithID(uint256 _artworkID) public view returns (address, address, bytes32, bytes32, bytes32) {
+    function getArtworkWithID(uint256 _artworkID) public view returns (address, address, string, bytes32, bytes32) {
         var _artwork = artwork[_artworkID];
         return (_artwork.creator, _artwork.owner, _artwork.imageLink, _artwork.title, _artwork.description);
     }

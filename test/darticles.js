@@ -5,13 +5,24 @@ contract('Darticles', (accounts) => {
     it('Should get profile that has been previously set', async function() {
         const defaultAccount = accounts[0]
         const darticlesInstance = await Darticles.deployed()
-        const profileImage = "haaseiondq2189e31"
-        const firstName = "Fernando"
-        const lastName = "Ortiz"
-        const nickName = "ferortiz"
-        await darticlesInstance.setProfile.call(profileImage, firstName, lastName, nickName, {from: defaultAccount})
+        const _profileImage = "QmeJm6RxCRWZ345otwhCzCjVsqVbUJ6XhCD3QJa2agwoPj"
+        const _firstName = "Fernando"
+        const _lastName = "Ortiz"
+        const _nickName = "ferortiz"
+
+        await darticlesInstance.setProfile(_profileImage, _firstName, _lastName, _nickName, {from: defaultAccount})
+
         const profile = await darticlesInstance.getProfile.call({from: defaultAccount})
-        assert.equal(true, true, "It should work")
+
+        const profileImage  = profile[0]
+        const firstName     = web3.toUtf8(profile[1])
+        const lastName      = web3.toUtf8(profile[2])
+        const nickName      = web3.toUtf8(profile[3])
+
+        assert.equal(profileImage, _profileImage, "The profile image was saved incorrectly")
+        assert.equal(firstName, _firstName, "The first name was saved incorrectly")
+        assert.equal(lastName, _lastName, "The last name was saved incorrectly")
+        assert.equal(nickName, _nickName, "The nick name was saved incorrectly")
     })
 
     it('Should get an artwork that I have added', async function() {
@@ -37,7 +48,7 @@ contract('Darticles', (accounts) => {
 
         const creator       = artwork[0]
         const owner         = artwork[1]
-        const imageLink     = web3.toUtf8(artwork[2])
+        const imageLink     = artwork[2]
         const title         = web3.toUtf8(artwork[3])
         const description   = web3.toUtf8(artwork[4])
 
