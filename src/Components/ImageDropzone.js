@@ -28,7 +28,7 @@ export default class ImageDropzone extends Component {
                       style={{
                         "width"       : "inherit", 
                         "height"      : "inherit", 
-                        "objectFit"  : "cover"
+                        "objectFit"  : "contain"
                       }}
                       src={image.preview} 
                       alt="An image" 

@@ -90,14 +90,11 @@ class App extends Component {
         const cells = auctions.map(this.createAuctionCell)
 
         return(
-            <div className="App">
-                <NavigationBar/>
-                <main className="container">
-                    <h1>Auctions</h1>
-                    <div className="pure-g">
-                        { cells }
-                    </div>
-                </main>
+            <div>
+                <h1>Auctions</h1>
+                <div className="pure-g">
+                    { cells }
+                </div>
             </div>
         )   
     }

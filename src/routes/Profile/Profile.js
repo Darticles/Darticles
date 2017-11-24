@@ -69,9 +69,7 @@ export default class Profile extends Component {
 
 
         return (
-            <div className="App">
-                <NavigationBar/>
-                <main className="container">
+            <div>
                 <h1>Profile for {firstName} {lastName}</h1>
                     <div className="pure-g">
                         <div className="pure-u-1-5"></div>
@@ -88,7 +86,6 @@ export default class Profile extends Component {
                             </div>
                         <div className="pure-u-1-5"></div>
                     </div>
-                </main>
             </div>
         )    
     }

@@ -18,7 +18,10 @@ export default class ArtworkCell extends Component {
         return (
             <div className="pure-u-1-4" onClick={this.props.onClick}>
                 <div className="card">
-                    <img className="full-width-image" src={imageLink} />
+                    <div className="img-container">
+                        <img className="full-width-image" src={imageLink} />
+                    </div>
+                    
                     <div className="card-text">
                         <p className="big">{title}</p>
                         <p className="small">{subtitle}</p>
