@@ -59,4 +59,36 @@ contract('Darticles', (accounts) => {
         assert.equal(description, description1, "The description was saved incorrectly")
     })
     
+    it('Should start an auction correctly', async function() {
+        const darticlesInstance = await Darticles.deployed()
+        const defaultAccount = accounts[0]
+
+        const imageLink1 = "QmeJm6RxCRWZ345otwhCzCjVsqVbUJ6XhCD3QJa2agwoPj"
+        const title1 = "Title"
+        const description1 = "Description"
+        await darticlesInstance.addArtwork(imageLink1, title1, description1, { from: defaultAccount })
+        const _artworkID = 0
+        const _initialPrice = 10000
+        const _endTimestamp = 0
+        await darticlesInstance.startAuction(_artworkID, _initialPrice, _endTimestamp, { from: defaultAccount })
+        const activeAuctions = await darticlesInstance.getActiveAuctions.call({ from: defaultAccount })
+        const auctionID = 0
+
+        assert.equal(auctionID, activeAuctions[0], "Auction ids don't start from 0")
+
+        const auction = await darticlesInstance.getAuctionWithID.call(auctionID, { from: defaultAccount })
+        
+        const owner = auction[0]
+        const artworkID = auction[1]
+        const initialPrice = auction[2]
+        const endTimestamp = auction[3]
+        const state = web3.toUtf8(auction[4])
+
+        assert.equal(owner, defaultAccount, "The owner is not the default account")
+        assert.equal(_artworkID, artworkID, "The auction is not 0")
+        assert.equal(_initialPrice, initialPrice, "Ths initial price has not been set")
+        assert.equal(_endTimestamp, endTimestamp, "Ths end timestamp has not been set")
+        assert.equal(state, "Active", "The auction does not start Active")
+    })
+
 })
