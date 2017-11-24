@@ -18,7 +18,7 @@ contract('Darticles', (accounts) => {
         const darticlesInstance = await Darticles.deployed()
         const defaultAccount = accounts[0]
 
-        const imageLink1 = "imageLink"
+        const imageLink1 = "QmeJm6RxCRWZ345otwhCzCjVsqVbUJ6XhCD3QJa2agwoPj"
         const title1 = "Title"
         const description1 = "Description"
         await darticlesInstance.addArtwork(imageLink1, title1, description1, { from: defaultAccount })

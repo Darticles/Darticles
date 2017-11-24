@@ -12,11 +12,14 @@ import Darticles from '../../../build/contracts/Darticles.json'
 
 // Utils
 import promisify from '../../utils/promisify'
+import BigNumber from 'bignumber.js'
 
 // CSS Styles
 import '../../css/oswald.css'
 import '../../css/open-sans.css'
 import '../../css/pure-min.css'
+
+
 
 export default class Portfolio extends Component {
 
@@ -30,19 +33,36 @@ export default class Portfolio extends Component {
 
     componentWillMount() {
         this.getPortfolio()
-        .then((portfolio) => {
+        .then(function(portfolio){
             const darticlesInstance = this.props.darticlesInstance
             const web3 = this.props.web3
-            return Promise.all((portfolio.map((item) => new web3.BigNumber(item))).map((id) => darticlesInstance.getArtworkWithID.call(id, { from : this.props.defaultAccount })))
+
+            return Promise.all(portfolio.map((id) => darticlesInstance.getArtworkWithID.call(id, { from : this.props.defaultAccount })))
             // console.log(portfolio)
-        })
-        .then((artworks) => {
-            console.log(artworks)
+        }.bind(this))
+        .then(function(artworks) {
+            const web3 = this.props.web3
+
+            const dicts = artworks.map((artwork) => {
+                const imageID = artwork[2]
+                
+                const imageLink     = web3.toUtf8(artwork[2])
+                const title         = web3.toUtf8(artwork[3])
+                const description   = web3.toUtf8(artwork[4])
+                
+                return({
+                    imageLink,
+                    title,
+                    description,                  
+                })
+            })
+
+            console.log(dicts)
             this.setState({
                 ...this.state,
                 ready : true,
             })    
-        })
+        }.bind(this))
         .catch((error) => {
             console.log(error)
         })

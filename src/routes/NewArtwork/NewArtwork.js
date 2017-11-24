@@ -1,5 +1,5 @@
 // Libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import classnames from 'classnames'
 import Contract from 'truffle-contract'
 
@@ -47,64 +47,91 @@ export default class NewArtwork extends Component {
     }
 
     onSubmitPressed() {
-        // TODO: Add logic to upload image
-        // And then go back to porfolio
-        if(this.state.image) {
+        // TODO: Add logic to upload image And then go back to porfolio
+        if (this.state.image) {
             // document.location="/portfolio"
 
             if (this.state.title && this.state.description) {
                 var formData = new FormData();
                 formData.append("file", this.state.image)
-    
-                axios.post('http://localhost:3000/files', formData, {
-                    headers: {
-                      'Content-Type': 'multipart/form-data'
-                    }
-                })
-                  .then((response) => {
-                    const fileID = response.data[0]
-                    if (fileID) {
-                        console.log(fileID) 
-                        return this.props.darticlesInstance.addArtwork(fileID, this.state.title, this.state.description, { from : this.props.defaultAccount }) 
-                    }
-                  })
-                  .then((algo) => {
-                    document.location="/portfolio"                        
-                  })    
-                  .catch(function (error) {
-                    console.log(error);
-                  });          
+
+                axios
+                    .post('http://localhost:3000/files', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(function (response) {
+                        const fileID = response.data[0]
+                        if (fileID) {
+                            console.log(fileID)
+                            return this
+                                .props
+                                .darticlesInstance
+                                .addArtwork(fileID, this.state.title, this.state.description, {from: this.props.defaultAccount})
+                        }
+                    }.bind(this))
+                    .then(function (algo) {
+                        document.location = "/portfolio"
+                    }.bind(document))
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }
         }
     }
 
     getUploadForm() {
-        const { image } = this.state
-        
+        const {image} = this.state
+
         return (
             <div className="pure-g">
-            <div className="pure-u-1-5"></div>
-            <div className="pure-u-3-5 pure-form">
-                        {/* <legend>A compact inline form</legend> */}
+                <div className="pure-u-1-5"></div>
+                <div className="pure-u-3-5 pure-form">
+                    {/* <legend>A compact inline form</legend> */}
 
-                        <input className="full-width" placeholder="Title" onChange={this.onTextChanged("title").bind(this)}/>
-                        <ImageDropzone onImageSelected={this.onImageSelected.bind(this)} image={image}/>
-                        <textarea className="full-width" rows="4" cols="50" placeholder="Description" onChange={this.onTextChanged("description").bind(this)}>
-                        </textarea> 
-                        {/* <p><input className="full-width" placeholder="Description"/></p> */}
+                    <input
+                        className="full-width"
+                        placeholder="Title"
+                        onChange={this
+                        .onTextChanged("title")
+                        .bind(this)}/>
+                    <ImageDropzone
+                        onImageSelected={this
+                        .onImageSelected
+                        .bind(this)}
+                        image={image}/>
+                    <textarea
+                        className="full-width"
+                        rows="4"
+                        cols="50"
+                        placeholder="Description"
+                        onChange={this
+                        .onTextChanged("description")
+                        .bind(this)}></textarea>
+                    {/* <p><input className="full-width" placeholder="Description"/></p> */}
 
-                        <p><button className="pure-button pure-button-primary" style={{marginTop: "1.2em"}} onClick={this.onSubmitPressed.bind(this)}>Submit</button></p>
+                    <p>
+                        <button
+                            className="pure-button pure-button-primary"
+                            style={{
+                            marginTop: "1.2em"
+                        }}
+                            onClick={this
+                            .onSubmitPressed
+                            .bind(this)}>Submit</button>
+                    </p>
+                </div>
+                <div className="pure-u-1-5"></div>
             </div>
-            <div className="pure-u-1-5"></div>
-        </div>
         )
     }
 
     render() {
-        return(
+        return (
             <div>
                 <h1>Add new artwork</h1>
-                { this.getUploadForm() }
+                {this.getUploadForm()}
             </div>
         )
 
