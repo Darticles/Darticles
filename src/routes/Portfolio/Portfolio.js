@@ -49,8 +49,10 @@ export default class Portfolio extends Component {
                     const imageLink = "http://localhost:8080/ipfs/" + artwork[2]
                     const title = web3.toUtf8(artwork[3])
                     const description = web3.toUtf8(artwork[4])
+                    const state = web3.toUtf8(artwork[5])
+                    const id = artwork[6]
 
-                    return ({imageLink, title, description})
+                    return ({id, imageLink, title, description, state})
                 })
 
                 console.log(dicts)
@@ -92,8 +94,8 @@ export default class Portfolio extends Component {
     // i tal-art-filip-hodas-11.jpg",                 title       : "The pacman",
     //     },         ],     }) }
 
-    artworkCellPressed(event) {
-        alert("Does it work?")
+    artworkCellPressed(artworkID) {
+        document.location.href = '/portfolio/' + artworkID.toString()
     }
 
     newArtworkCellPressed(event) {

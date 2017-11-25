@@ -18,53 +18,55 @@ import BigNumber from 'bignumber.js'
 import '../../css/oswald.css'
 import '../../css/open-sans.css'
 import '../../css/pure-min.css'
+import './css/ArtworkDetail.css'
 
 export default class ArtworkDetail extends Component {
 
     constructor(props) {
         super(props)
-        this.state = { } 
+        this.state = {}
     }
 
     initialize() {
-        this.retrieveArtwork()
-        .then(function(response) {
-            const web3 = this.props.web3
+        this
+            .retrieveArtwork()
+            .then(function (response) {
+                const web3 = this.props.web3
 
-            console.log(response)
+                console.log(response)
 
-            const artwork = {
-                creator: response[0],
-                owner: response[1],
-                imageLink: "http://localhost:8080/ipfs/" + response[2],
-                title: web3.toUtf8(response[3]),
-                description: web3.toUtf8(response[4])
-            }
+                const artwork = {
+                    creator: response[0],
+                    owner: response[1],
+                    imageLink: "http://localhost:8080/ipfs/" + response[2],
+                    title: web3.toUtf8(response[3]),
+                    description: web3.toUtf8(response[4])
+                }
 
-            this.setState({
-                ...this.state,
-                artwork,
-                ready: true
+                this.setState({
+                    ...this.state,
+                    artwork,
+                    ready: true
+                })
+
+            }.bind(this))
+            .catch(function (error) {
+                console.log(error)
             })
-
-        }.bind(this))
-        .catch(function(error) {
-            console.log(error)
-        })
     }
 
     retrieveArtwork() {
         const artworkID = this.props.router.match.params.id
         if (artworkID) {
             return this
-            .props
-            .darticlesInstance
-            .getArtworkWithID.call(artworkID, {from: this.props.defaultAccount})
-        }
-        else {
+                .props
+                .darticlesInstance
+                .getArtworkWithID
+                .call(artworkID, {from: this.props.defaultAccount})
+        } else {
             throw 'No Artwork ID'
         }
-    } 
+    }
 
     componentWillMount() {
         this.initialize()
@@ -73,24 +75,36 @@ export default class ArtworkDetail extends Component {
     getDetail() {
         const artwork = this.state.artwork
 
-        return(       
+        return (
             <div class="pure-g">
-                <div className="pure-u-2-24"></div>
-                <div className="pure-u-20-24">
+                <div className="pure-u-1-24"></div>
+                <div
+                    className="pure-u-12-24"
+                    style={{
+                    backgroundColor: "black"
+                }}>
+                    <div className="img-container">
+                        <img className="full-width-image" src={artwork.imageLink}/>
+                    </div>
+                </div>
+                <div className="pure-u-1-24"></div>
+                <div className="pure-u-9-24">
                     <h2>{artwork.title}</h2>
                     <h3>{artwork.description}</h3>
-                    <img src={artwork.imageLink}/>
                 </div>
-                <div className="pure-u-2-24"></div>
+
+                <div className="pure-u-1-24"></div>
             </div>
         )
     }
 
     render() {
-        return(
+        return (
             <div>
-                <h1>Artwork Detail for {this.props.router.match.params.id}</h1>
-                { this.state.ready ? this.getDetail() : <div/> }
+                <h1>Artwork Detail</h1>
+                {this.state.ready
+                    ? this.getDetail()
+                    : <div/>}
             </div>
         )
     }

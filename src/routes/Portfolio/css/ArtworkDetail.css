@@ -1,0 +1,10 @@
+.img-container {
+    height: 50%;
+    margin: 20px;
+}
+
+.full-width-image {
+    max-height:100%; 
+    max-width:100%;
+    object-fit: contain;
+}

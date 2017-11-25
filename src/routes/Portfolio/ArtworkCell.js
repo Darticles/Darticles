@@ -13,10 +13,10 @@ export default class ArtworkCell extends Component {
 
     render() {
         const { artwork } = this.props
-        const { imageLink, title, subtitle } = artwork
+        const {id, imageLink, title, subtitle } = artwork
 
         return (
-            <div className="pure-u-1-4" onClick={this.props.onClick}>
+            <div className="pure-u-1-4" onClick={() => {this.props.onClick(this.props.artwork.id)} }>
                 <div className="card">
                     <div className="img-container">
                         <img className="full-width-image" src={imageLink} />
