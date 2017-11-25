@@ -3,11 +3,9 @@ import NavigationBar from '../NavigationBar/NavigationBar'
 import ImageDropzone from '../../Components/ImageDropzone'
 import axios from 'axios'
 
+import {Row, Col, Button, CardPanel} from 'react-materialize'
+
 // CSS Styles
-import '../../css/oswald.css'
-import '../../css/open-sans.css'
-import '../../css/pure-min.css'
-import '../css/root.css'
 import './Profile.css'
 
 export default class Profile extends Component {
@@ -36,23 +34,23 @@ export default class Profile extends Component {
             .getProfile()
             .then(function (profile) {
                 const web3 = this.props.web3
-                
+
                 const profileImage = profile[0]
                 const firstName = web3.toUtf8(profile[1])
                 const lastName = web3.toUtf8(profile[2])
                 const nickName = web3.toUtf8(profile[3])
-                
+
                 this.setState({
                     ...this.state,
-                    ready : true,
+                    ready: true,
                     profileImage,
                     firstName,
                     lastName,
-                    nickName,
+                    nickName
                 })
 
             }.bind(this))
-            .catch( function(error) {
+            .catch(function (error) {
                 console.log(error)
             })
     }
@@ -109,61 +107,59 @@ export default class Profile extends Component {
 
     getProfileForm() {
         const {image, firstName, lastName, nickName} = this.state
-        
-        return(
-            <div className="pure-g">
-            <div className="pure-u-1-5"></div>
-            <div className="pure-u-1-5">
-                <div className="padding-image-drop">
-                    <ImageDropzone
-                        onImageSelected={this
-                        .onImageSelected
-                        .bind(this)}
-                        image={image}/>
-                </div>
+
+        return (
+            <div className="">
+                <Row>
+                    <Col s={2}></Col>
+                    <Col s={8}>
+                        <CardPanel>
+                            <ImageDropzone
+                                onImageSelected={this
+                                .onImageSelected
+                                .bind(this)}
+                                image={image}/>
+                            <input
+                                style={{
+                                marginTop: "10px"
+                            }}
+                                className="full-width"
+                                placeholder="First Name"
+                                value={this.state.firstName}
+                                onChange={this
+                                .onTextChanged("firstName")
+                                .bind(this)}/>
+                            <input
+                                style={{
+                                marginTop: "10px"
+                            }}
+                                className="full-width"
+                                placeholder="Last Name"
+                                value={this.state.lastName}
+                                onChange={this
+                                .onTextChanged("lastName")
+                                .bind(this)}/>
+                            <input
+                                style={{
+                                marginTop: "10px"
+                            }}
+                                className="full-width"
+                                placeholder="Nickname"
+                                value={this.state.nickName}
+                                onChange={this
+                                .onTextChanged("nickName")
+                                .bind(this)}/>
+
+                            <Button
+                                waves='light'
+                                onClick={this
+                                .onSubmitPressed
+                                .bind(this)}>Submit</Button>
+                        </CardPanel>
+                    </Col>
+                    <Col s={2}></Col>
+                </Row>
             </div>
-            <div className="pure-u-2-5 pure-form">
-                <input
-                    style={{
-                    marginTop: "10px"
-                }}
-                    className="full-width"
-                    placeholder="First Name"
-                    value={this.state.firstName}
-                    onChange={this
-                    .onTextChanged("firstName")
-                    .bind(this)}/>
-                <input
-                    style={{
-                    marginTop: "10px"
-                }}
-                    className="full-width"
-                    placeholder="Last Name"
-                    value={this.state.lastName}
-                    onChange={this
-                    .onTextChanged("lastName")
-                    .bind(this)}/>
-                <input
-                    style={{
-                    marginTop: "10px"
-                }}
-                    className="full-width"
-                    placeholder="Nickname"
-                    value={this.state.nickName}
-                    onChange={this
-                    .onTextChanged("nickName")
-                    .bind(this)}/>
-                <button
-                    className="pure-button pure-button-primary"
-                    style={{
-                    marginTop: "1.2em"
-                }}
-                    onClick={this
-                    .onSubmitPressed
-                    .bind(this)}>Submit</button>
-            </div>
-            <div className="pure-u-1-5"></div>
-        </div>
         )
     }
 
@@ -173,9 +169,9 @@ export default class Profile extends Component {
 
         return (
             <div>
-                <h1>Profile for {firstName}
-                    {lastName}</h1>
-                    {this.state.ready ? this.getProfileForm() : <div/>}
+                {this.state.ready
+                    ? this.getProfileForm()
+                    : <div/>}
             </div>
         )
     }

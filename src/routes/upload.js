@@ -3,11 +3,6 @@ import classnames from 'classnames'
 
 import NavigationBar from './NavigationBar/NavigationBar'
 
-import '../css/oswald.css'
-import '../css/open-sans.css'
-import '../css/pure-min.css'
-import './css/root.css'
-
 class App extends Component {
     constructor(props){
         super(props)

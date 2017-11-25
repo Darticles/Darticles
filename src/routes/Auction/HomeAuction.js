@@ -15,12 +15,6 @@ import getWeb3 from '../../utils/getWeb3'
 import promisify from '../../utils/promisify'
 
 
-// CSS Styles
-import '../../css/oswald.css'
-import '../../css/open-sans.css'
-import '../../css/pure-min.css'
-import '../css/root.css'
-
 class App extends Component {
     constructor(props){
         super(props)
@@ -91,10 +85,9 @@ class App extends Component {
 
         return(
             <div>
-                <h1>Auctions</h1>
-                <div className="pure-g">
+                {/* <div className="pure-g">
                     { cells }
-                </div>
+                </div> */}
             </div>
         )   
     }

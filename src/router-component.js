@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import { Container, ProgressBar } from 'react-materialize'
 
 import Home from './routes/HomeTruffle';
 import Uploader from './routes/upload';
@@ -76,9 +77,7 @@ class RouterComponent extends Component {
         return(
             <div className="App">
                 <NavigationBar/>
-                <main className="container">
-                    {this.state.ready ? this.getRouter() : <h1>Loading Contract...</h1>}
-                </main>
+                    {this.state.ready ? this.getRouter() : <ProgressBar />}
             </div>        
         )
     }

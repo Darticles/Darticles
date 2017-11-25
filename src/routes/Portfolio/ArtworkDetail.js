@@ -15,9 +15,6 @@ import promisify from '../../utils/promisify'
 import BigNumber from 'bignumber.js'
 
 // CSS Styles
-import '../../css/oswald.css'
-import '../../css/open-sans.css'
-import '../../css/pure-min.css'
 import './css/ArtworkDetail.css'
 
 export default class ArtworkDetail extends Component {

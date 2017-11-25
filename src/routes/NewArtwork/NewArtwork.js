@@ -2,17 +2,13 @@
 import React, {Component} from 'react'
 import classnames from 'classnames'
 import Contract from 'truffle-contract'
+import {Row, Col, Button, CardPanel} from 'react-materialize'
 
 import Darticles from '../../../build/contracts/Darticles.json'
 
 // Components
 import ImageDropzone from '../../Components/ImageDropzone'
 
-// CSS Styles
-import '../../css/oswald.css'
-import '../../css/open-sans.css'
-import '../../css/pure-min.css'
-import '../css/root.css'
 import './css/NewArtwork.css'
 
 import getWeb3 from '../../utils/getWeb3'
@@ -85,10 +81,15 @@ export default class NewArtwork extends Component {
         const {image} = this.state
 
         return (
-            <div className="pure-g">
-                <div className="pure-u-1-5"></div>
-                <div className="pure-u-3-5 pure-form">
-                    {/* <legend>A compact inline form</legend> */}
+            <Row>
+                <Col s={2}></Col>
+                <Col s={8}>
+                    <CardPanel>
+                    <ImageDropzone
+                        onImageSelected={this
+                        .onImageSelected
+                        .bind(this)}
+                        image={image}/>
 
                     <input
                         className="full-width"
@@ -96,41 +97,33 @@ export default class NewArtwork extends Component {
                         onChange={this
                         .onTextChanged("title")
                         .bind(this)}/>
-                    <ImageDropzone
-                        onImageSelected={this
-                        .onImageSelected
-                        .bind(this)}
-                        image={image}/>
-                    <textarea
+                    <input
                         className="full-width"
                         rows="4"
                         cols="50"
                         placeholder="Description"
                         onChange={this
                         .onTextChanged("description")
-                        .bind(this)}></textarea>
+                        .bind(this)}></input>
                     {/* <p><input className="full-width" placeholder="Description"/></p> */}
 
-                    <p>
-                        <button
-                            className="pure-button pure-button-primary"
-                            style={{
-                            marginTop: "1.2em"
-                        }}
-                            onClick={this
+                    <Button onClick={this
                             .onSubmitPressed
-                            .bind(this)}>Submit</button>
-                    </p>
-                </div>
-                <div className="pure-u-1-5"></div>
-            </div>
+                            .bind(this)}>
+                            Submit
+                    </Button>
+                    </CardPanel>
+                </Col>
+                <Col s={2}></Col>
+
+            </Row>
+
         )
     }
 
     render() {
         return (
             <div>
-                <h1>Add new artwork</h1>
                 {this.getUploadForm()}
             </div>
         )

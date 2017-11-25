@@ -7,18 +7,11 @@ import NavigationBar from './NavigationBar/NavigationBar'
 import PortfolioImage from './img/Darticles-portfolio.png'
 import AuctionImage from './img/Darticles-auction.png'
 
-import '../css/oswald.css'
-import '../css/open-sans.css'
-import '../css/pure-min.css'
-import './css/root.css'
-
 class App extends Component {  
 
     render() {
         return (
           <div className="App">
-              <NavigationBar/>
-              <main className="container">
                   <h1>Darticles</h1>
                   <h2>Decentralized artwork portfolio and auctioning platform.</h2>
                   <hr/>
@@ -42,7 +35,6 @@ class App extends Component {
                   <hr/>
                   <h2>Auctions</h2>
                   <img src={AuctionImage} />
-              </main>
           </div>
         )
     }

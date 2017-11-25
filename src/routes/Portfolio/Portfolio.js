@@ -1,5 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
+import { Row, Col } from 'react-materialize'
 import Contract from 'truffle-contract'
 import classnames from 'classnames'
 
@@ -14,10 +15,6 @@ import Darticles from '../../../build/contracts/Darticles.json'
 import promisify from '../../utils/promisify'
 import BigNumber from 'bignumber.js'
 
-// CSS Styles
-import '../../css/oswald.css'
-import '../../css/open-sans.css'
-import '../../css/pure-min.css'
 
 export default class Portfolio extends Component {
 
@@ -76,24 +73,6 @@ export default class Portfolio extends Component {
             .call({from: this.props.defaultAccount})
     }
 
-    // loadSampleArtwork() {     this.setState({         ...this.state, artwork: [
-    //           {                 imageLink   :
-    // "https://i.pinimg.com/originals/02/f9/12/02f912e15e0417739cb7ab903681862d.jpg
-    // " ,                 title       : "The lion",             },             {
-    //         imageLink   :
-    // "https://i.pinimg.com/736x/e0/3b/d0/e03bd0c4c05e76ae8605462336b40e7a--graphic
-    // - design-studios-art-design.jpg",                 title       : "The head",
-    //       },             {                 imageLink   :
-    // "https://i.pinimg.com/originals/8d/1a/fd/8d1afdf0c54bb93d11d553306c03cd34.jpg
-    // " ,                 title       : "The bird",             },             {
-    //         imageLink   :
-    // "https://www.classboat.com/AdminImages/SubCategory/078907Digital-Art.jpg",
-    //           title       : "The planet",             },             {
-    // imageLink   :
-    // "https://www.demilked.com/magazine/wp-content/uploads/2017/07/pop-culture-dig
-    // i tal-art-filip-hodas-11.jpg",                 title       : "The pacman",
-    //     },         ],     }) }
-
     artworkCellPressed(artworkID) {
         document.location.href = '/portfolio/' + artworkID.toString()
     }
@@ -126,9 +105,10 @@ export default class Portfolio extends Component {
 
         return (
             <div>
-                <h1>Portfolio</h1>
-                {artworkCells}
-                {addNewArtworkCell}
+                <Row>
+                    {artworkCells}
+                    {addNewArtworkCell}
+                </Row>
             </div>
         )
     }
