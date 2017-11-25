@@ -135,15 +135,15 @@ contract('Darticles', (accounts) => {
         // -- BID 3 --
 
         const bid3 = web3.toWei('0.2', 'ether')
-        let exception = false
+        let bid3Exception = false
 
         try {
             await darticlesInstance.makeBid(auctionID, { from: defaultAccount, value: bid3 })
         } catch (error) {
-            exception = true
+            bid3Exception = true
         }
 
-        assert.equal(exception, true, "Make bid did not throw an exception")
+        assert.equal(bid3Exception, true, "Make minor bid did not throw an exception")
 
         const currentBidAt3 = await darticlesInstance.getCurrentBidForAuctionWithID.call(auctionID, { from: defaultAccount })
         const sender3 = currentBidAt3[0]
@@ -152,7 +152,35 @@ contract('Darticles', (accounts) => {
         assert.equal(sender3, otherAccount, "The third bid is not being stored correctly. Addresses do not match")
         assert.equal(value3, bid2, "The third bid is not being stored correctly. Values do not match")
 
-        
+        const refundsForDefaultAccount = await darticlesInstance.getRefundsFor.call(defaultAccount)        
+        const refundsForOtherAccount = await darticlesInstance.getRefundsFor.call(otherAccount)
+
+        assert.equal(refundsForDefaultAccount, bid1, "No founds were refunded for default account after discarding bid1")
+        assert.equal(refundsForOtherAccount, 0, "The contract has refunded ether for other account without reason")
+
+        let endAuctionFromDefaultAccountException = false
+
+        try {
+            await darticlesInstance.endAuction(auctionID, { from: defaultAccount })
+        } catch (error) {
+            console.log(`Error => ${error}`)
+            endAuctionFromDefaultAccountException = true
+        }
+
+        try {
+            await darticlesInstance.endAuction(auctionID, { from: otherAccount })
+        } catch (error) {
+            console.log(`Error => ${error}`)
+        }
+        assert.equal(endAuctionFromDefaultAccountException, true, "Ending auction using a loser account did not raise an exception")
+
+        // await darticlesInstance.endAuction(auctionID, { from: otherAccount })
+
+        const activeAuctionsIDS = await darticlesInstance.getActiveAuctions.call({from: defaultAccount})
+        console.log(`Active auctions => ${activeAuctionsIDS}`)
+
+        const endedAuctionsIDS = await darticlesInstance.getEndedAuctions.call({from: defaultAccount})
+        console.log(`Ended auctions => ${endedAuctionsIDS}`)
     })
 
 })
