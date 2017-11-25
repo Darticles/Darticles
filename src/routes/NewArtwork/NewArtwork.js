@@ -85,33 +85,34 @@ export default class NewArtwork extends Component {
                 <Col s={2}></Col>
                 <Col s={8}>
                     <CardPanel>
-                    <ImageDropzone
-                        onImageSelected={this
-                        .onImageSelected
-                        .bind(this)}
-                        image={image}/>
+                        <ImageDropzone
+                            onImageSelected={this
+                            .onImageSelected
+                            .bind(this)}
+                            image={image}/>
 
-                    <input
-                        className="full-width"
-                        placeholder="Title"
-                        onChange={this
-                        .onTextChanged("title")
-                        .bind(this)}/>
-                    <input
-                        className="full-width"
-                        rows="4"
-                        cols="50"
-                        placeholder="Description"
-                        onChange={this
-                        .onTextChanged("description")
-                        .bind(this)}></input>
-                    {/* <p><input className="full-width" placeholder="Description"/></p> */}
+                        <input
+                            className="full-width"
+                            placeholder="Title"
+                            onChange={this
+                            .onTextChanged("title")
+                            .bind(this)}/>
+                        <input
+                            className="full-width"
+                            rows="4"
+                            cols="50"
+                            placeholder="Description"
+                            onChange={this
+                            .onTextChanged("description")
+                            .bind(this)}></input>
+                        {/* <p><input className="full-width" placeholder="Description"/></p> */}
 
-                    <Button onClick={this
+                        <Button
+                            onClick={this
                             .onSubmitPressed
                             .bind(this)}>
                             Submit
-                    </Button>
+                        </Button>
                     </CardPanel>
                 </Col>
                 <Col s={2}></Col>

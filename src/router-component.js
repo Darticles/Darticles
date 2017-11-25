@@ -59,6 +59,7 @@ class RouterComponent extends Component {
         return(
             <BrowserRouter>
             <div>
+                <Route path="/" component={NavigationBar}/>
                 <Switch>
                     <Route exact path="/" component={() => (<Home web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route path="/upload" component={() => (<Uploader web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
@@ -76,7 +77,6 @@ class RouterComponent extends Component {
     render() {
         return(
             <div className="App">
-                <NavigationBar/>
                     {this.state.ready ? this.getRouter() : <ProgressBar />}
             </div>        
         )

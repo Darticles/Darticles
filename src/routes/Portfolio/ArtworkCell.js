@@ -9,39 +9,19 @@ export default class ArtworkCell extends Component {
 
     render() {
         const {artwork} = this.props
-        const {id, imageLink, title, subtitle} = artwork
+        const {id, imageLink, title, description} = artwork
 
         return (
             <Col s={3}>
-            <Card className='medium'
+            <Card className='small'
 	              header={<CardTitle image={imageLink}>{title}</CardTitle>}
 	              actions={[<a onClick={() => {
                     this
                         .props
                         .onClick(this.props.artwork.id)
-                }}>Detail</a>]}>
-                  <div className="card-content">
-                  {subtitle}
-                  </div>
+                }}>Show Artwork Detail</a>]}>
+                  {description}
             </Card>
-
-                {/* <div
-                    className="card"
-                    onClick={() => {
-                    this
-                        .props
-                        .onClick(this.props.artwork.id)
-                }}>
-                    <div className="img-container">
-                        <img className="full-width-image" src={imageLink}/>
-                    </div>
-
-                    <div className="card-text">
-                        <p className="big">{title}</p>
-                        <p className="small">{subtitle}</p>
-                    </div>
-                </div> */}
-
             </Col>
         )
     }

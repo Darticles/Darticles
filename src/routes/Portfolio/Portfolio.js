@@ -1,6 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
-import { Row, Col } from 'react-materialize'
+import {Row, Col, Button, CardPanel, Icon} from 'react-materialize'
 import Contract from 'truffle-contract'
 import classnames from 'classnames'
 
@@ -14,7 +14,6 @@ import Darticles from '../../../build/contracts/Darticles.json'
 // Utils
 import promisify from '../../utils/promisify'
 import BigNumber from 'bignumber.js'
-
 
 export default class Portfolio extends Component {
 
@@ -42,7 +41,7 @@ export default class Portfolio extends Component {
                 var i = 0
                 const dicts = artworks.map((artwork) => {
                     const imageID = artwork[2]
-                    
+
                     const imageLink = "http://localhost:8080/ipfs/" + artwork[2]
                     const title = web3.toUtf8(artwork[3])
                     const description = web3.toUtf8(artwork[4])
@@ -104,11 +103,18 @@ export default class Portfolio extends Component {
             .bind(this)}/>)
 
         return (
-            <div>
+            <div style={{
+                margin: "20px"
+            }}>
                 <Row>
                     {artworkCells}
-                    {addNewArtworkCell}
                 </Row>
+                <Button
+                    waves='light'
+                    onClick={this
+                    .newArtworkCellPressed
+                    .bind(this)}>
+                    <Icon left>add</Icon>Add New Artwork</Button>
             </div>
         )
     }

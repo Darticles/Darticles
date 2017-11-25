@@ -2,6 +2,7 @@
 import React, {Component} from 'react'
 import Contract from 'truffle-contract'
 import classnames from 'classnames'
+import {Card, CardTitle, Container, Row, Col} from 'react-materialize'
 
 // Components
 import NavigationBar from '../NavigationBar/NavigationBar'
@@ -73,36 +74,47 @@ export default class ArtworkDetail extends Component {
         const artwork = this.state.artwork
 
         return (
-            <div class="pure-g">
-                <div className="pure-u-1-24"></div>
-                <div
-                    className="pure-u-12-24"
-                    style={{
-                    backgroundColor: "black"
-                }}>
-                    <div className="img-container">
-                        <img className="full-width-image" src={artwork.imageLink}/>
-                    </div>
-                </div>
-                <div className="pure-u-1-24"></div>
-                <div className="pure-u-9-24">
-                    <h2>{artwork.title}</h2>
-                    <h3>{artwork.description}</h3>
-                </div>
+            <Row>
+                <Col s={1}></Col>
+                <Col s={10}>
+                <Card header={<CardTitle reveal image={artwork.imageLink} waves='light'/>}
+            title={artwork.title}>
+            {artwork.description}
+            </Card>
 
-                <div className="pure-u-1-24"></div>
-            </div>
+                </Col>
+                <Col s={1}></Col>
+            </Row>
+
+            // <div class="pure-g">
+            //     <div className="pure-u-1-24"></div>
+            //     <div
+            //         className="pure-u-12-24"
+            //         style={{
+            //         backgroundColor: "black"
+            //     }}>
+            //         <div className="img-container">
+            //             <img className="full-width-image" src={artwork.imageLink}/>
+            //         </div>
+            //     </div>
+            //     <div className="pure-u-1-24"></div>
+            //     <div className="pure-u-9-24">
+            //         <h2>{artwork.title}</h2>
+            //         <h3>{artwork.description}</h3>
+            //     </div>
+
+            //     <div className="pure-u-1-24"></div>
+            // </div>
         )
     }
 
     render() {
         return (
-            <div>
-                <h1>Artwork Detail</h1>
+            <Container>
                 {this.state.ready
                     ? this.getDetail()
                     : <div/>}
-            </div>
+            </Container>
         )
     }
 

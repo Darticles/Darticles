@@ -4,10 +4,10 @@ import { Navbar, NavItem } from 'react-materialize'
 class NavigationBar extends Component {
     render() {
         return(       
-            <Navbar className="blue-grey darken-4" brand='Darticles' left>
-                <NavItem href='/portfolio'>Portfolio</NavItem>
-                <NavItem href='/auctions'>Auctions</NavItem>
-                <NavItem href='/profile'>Profile</NavItem>
+            <Navbar className="blue darken-4" brand='Darticles' left>
+                <NavItem className={this.props.location.pathname.includes("portfolio") ? "active" : ""} href='/portfolio'>Portfolio</NavItem>
+                <NavItem className={this.props.location.pathname.includes("auctions") ? "active" : ""} href='/auctions'>Auctions</NavItem>
+                <NavItem className={this.props.location.pathname.includes("profile") ? "active" : ""}href='/profile'>Profile</NavItem>
             </Navbar>
             // <nav className="navbar pure-menu pure-menu-horizontal">
             //     <a href="/" className="pure-menu-heading pure-menu-link">Darticles</a>
