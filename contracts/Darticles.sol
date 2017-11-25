@@ -66,19 +66,19 @@ contract Darticles {
     // This is important because we need every artwork to be unique.
     // So every artwork has an 'id' property that is equal to the 
     // number of artworks in this contract
-    uint256 public artworkCount = 0;
-    uint256 public auctionsCount = 0;
+    uint256 private artworkCount = 0;
+    uint256 private auctionsCount = 0;
     
-    mapping(uint256 => Artwork) public artwork;                 // This allows us to get an artwork from its id
-    mapping(address => uint256[]) public portfolioOf;           // This allows us to get the ids of the artwork of a specific user
-    mapping(address => Profile) public profileOf;               // Profiles for each address
-    mapping(address => uint256) public refundsFor;              // Ether that people can withdraw
-    mapping(uint256 => Auction) public auctionWithID;           //
-    mapping(address => uint256[]) public auctionsOf;            //
-    mapping(uint256 => Bid) public currentBidForAuctionWithID;  //
+    mapping(uint256 => Artwork) private artwork;                 // This allows us to get an artwork from its id
+    mapping(address => uint256[]) private portfolioOf;           // This allows us to get the ids of the artwork of a specific user
+    mapping(address => Profile) private profileOf;               // Profiles for each address
+    mapping(address => uint256) private refundsFor;              // Ether that people can withdraw
+    mapping(uint256 => Auction) private auctionWithID;           //
+    mapping(address => uint256[]) private auctionsOf;            //
+    mapping(uint256 => Bid) private currentBidForAuctionWithID;  //
 
-    uint256[] public activeAuctions;                                  //
-    uint256[] public endedAuctions;
+    uint256[] private activeAuctions;                                  //
+    uint256[] private endedAuctions;
 
     address owner;
     
@@ -144,16 +144,16 @@ contract Darticles {
     }
     
 
-    function transferArtwork(address _to, uint256 _id) public {
-        uint256 index = getIndexForArtworkInSenderPortfolio(_id);
-        require (index != portfolioOf[msg.sender].length); // The artwork was not found
+    function transferArtwork(address _from, address _to, uint256 _id) public {
+        uint256 index = getIndexForArtworkInSenderPortfolio(_from, _id);
+        require (index < portfolioOf[_from].length); // The artwork was not found
         artwork[_id].owner = _to;
         portfolioOf[_to].push(_id);
         delete(portfolioOf[msg.sender][index]);
     }
     
-    function getIndexForArtworkInSenderPortfolio(uint256 _id) private view returns (uint256) {
-        var idsForSender = portfolioOf[msg.sender]; // Los ids de las obras del sender
+    function getIndexForArtworkInSenderPortfolio(address _sender, uint256 _id) private view returns (uint256) {
+        var idsForSender = portfolioOf[_sender]; // Los ids de las obras del sender
         uint256 index = 0;
         while (idsForSender[index] != _id && index < idsForSender.length) { // aca recorro los ids de las obras
             index++;
@@ -214,13 +214,19 @@ contract Darticles {
         var bidValue = currentBidForAuctionWithID[_auctionID].value;
         
         endedAuctions.push(_auctionID);
-        delete(activeAuctions[index]);
+        if (activeAuctions.length > 1) {
+            activeAuctions[index] = activeAuctions[activeAuctions.length - 1];
+            delete activeAuctions[activeAuctions.length - 1];
+            activeAuctions.length--;
+        } else {
+            activeAuctions = new uint256[](0);
+        }
 
         var _artwork = artwork[auction.artworkID];
-        refundsFor[_artwork.creator] = bidValue * 10 / 100;
-        refundsFor[_artwork.owner] = bidValue * 85 / 100;
-        refundsFor[owner] = bidValue * 5 / 100;
-        transferArtwork(msg.sender, auction.artworkID);
+        refundsFor[_artwork.creator] += bidValue * 10 / 100;
+        refundsFor[_artwork.owner] += bidValue * 85 / 100;
+        refundsFor[owner] += bidValue * 5 / 100;
+        transferArtwork(_artwork.owner, msg.sender, auction.artworkID);
 
         LogEndedAuction(_auctionID);
     }
@@ -280,13 +286,22 @@ contract Darticles {
     function getPortfolio() public view returns (uint256[]) {
         return portfolioOf[msg.sender];
     }
+
+    function getCurrentBidForAuctionWithID(uint256 _auctionID) public view returns (address, uint256) {
+        var _bid = currentBidForAuctionWithID[_auctionID];
+        return (_bid.sender, _bid.value);
+    }
     
+    function getRefundsFor(address _participant) public view returns (uint256) {
+        return refundsFor[_participant];
+    }
+
     // ==================================
     //              MODIFIERS
     // ==================================
     
     modifier senderHasArtworkWithID(uint256 _id) {
-        require(getIndexForArtworkInSenderPortfolio(_id) != portfolioOf[msg.sender].length);
+        require(getIndexForArtworkInSenderPortfolio(msg.sender, _id) != portfolioOf[msg.sender].length);
         _;
     }
     
