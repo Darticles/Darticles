@@ -280,6 +280,11 @@ contract Darticles {
     function getPortfolio() public view returns (uint256[]) {
         return portfolioOf[msg.sender];
     }
+
+    function getCurrentBidForAuctionWithID(uint256 _auctionID) public view returns (address, uint256) {
+        var _bid = currentBidForAuctionWithID[_auctionID];
+        return (_bid.sender, _bid.value);
+    }
     
     // ==================================
     //              MODIFIERS

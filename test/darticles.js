@@ -91,4 +91,68 @@ contract('Darticles', (accounts) => {
         assert.equal(state, "Active", "The auction does not start Active")
     })
 
+    it('Should add bids correctly', async function() {
+        const darticlesInstance = await Darticles.deployed()
+        const defaultAccount = accounts[0]
+        const otherAccount = accounts[1]
+
+        const imageLink1 = "QmeJm6RxCRWZ345otwhCzCjVsqVbUJ6XhCD3QJa2agwoPj"
+        const title1 = "Title"
+        const description1 = "Description"
+        await darticlesInstance.addArtwork(imageLink1, title1, description1, { from: defaultAccount })
+        const _artworkID = 0
+        const _initialPrice = 10000
+        const _endTimestamp = 0
+        await darticlesInstance.startAuction(_artworkID, _initialPrice, _endTimestamp, { from: defaultAccount })
+        const activeAuctions = await darticlesInstance.getActiveAuctions.call({ from: defaultAccount })
+        const auctionID = 0
+
+
+        // -- BID 1 --
+
+        const bid1 = web3.toWei('0.1', 'ether')
+        await darticlesInstance.makeBid(auctionID, { from: defaultAccount, value: bid1 })
+        const currentBidAt1 = await darticlesInstance.getCurrentBidForAuctionWithID.call(auctionID, { from: defaultAccount })
+        
+        const sender1 = currentBidAt1[0]
+        const value1 = new web3.BigNumber(currentBidAt1[1])
+
+        assert.equal(sender1, defaultAccount, "The first bid is not being stored correctly. Addresses do not match")
+        assert.equal(value1, bid1, "The first bid is not being stored correctly. Values do not match")
+
+        // -- BID 2 --
+
+        const bid2 = web3.toWei('0.3', 'ether')
+        await darticlesInstance.makeBid(auctionID, { from: otherAccount, value: bid2 })
+        const currentBidAt2 = await darticlesInstance.getCurrentBidForAuctionWithID.call(auctionID, { from: defaultAccount })
+
+        const sender2 = currentBidAt2[0]
+        const value2 = new web3.BigNumber(currentBidAt2[1])
+
+        assert.equal(sender2, otherAccount, "The second bid is not being stored correctly. Addresses do not match")
+        assert.equal(value2, bid2, "The second bid is not being stored correctly. Values do not match")
+
+        // -- BID 3 --
+
+        const bid3 = web3.toWei('0.2', 'ether')
+        let exception = false
+
+        try {
+            await darticlesInstance.makeBid(auctionID, { from: defaultAccount, value: bid3 })
+        } catch (error) {
+            exception = true
+        }
+
+        assert.equal(exception, true, "Make bid did not throw an exception")
+
+        const currentBidAt3 = await darticlesInstance.getCurrentBidForAuctionWithID.call(auctionID, { from: defaultAccount })
+        const sender3 = currentBidAt3[0]
+        const value3 = new web3.BigNumber(currentBidAt3[1])
+
+        assert.equal(sender3, otherAccount, "The third bid is not being stored correctly. Addresses do not match")
+        assert.equal(value3, bid2, "The third bid is not being stored correctly. Values do not match")
+
+        
+    })
+
 })
