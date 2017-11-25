@@ -51,12 +51,16 @@ contract('Darticles', (accounts) => {
         const imageLink     = artwork[2]
         const title         = web3.toUtf8(artwork[3])
         const description   = web3.toUtf8(artwork[4])
+        const state         = web3.toUtf8(artwork[5])
+        const returnedID    = artwork[6]
 
         assert.equal(creator, defaultAccount, "The creator is not the default account")
         assert.equal(owner, defaultAccount, "The owner is not the default account")
         assert.equal(imageLink, imageLink1, "The image link was saved incorrectly")
         assert.equal(title, title1, "The title was saved incorrectly")
         assert.equal(description, description1, "The description was saved incorrectly")
+        assert.equal(state, "Available", "The artwork does not start as Available")
+        assert.equal(returnedID, 0, "The returned id is different from the sent one")
     })
     
     it('Should start an auction correctly', async function() {

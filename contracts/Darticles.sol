@@ -294,9 +294,9 @@ contract Darticles {
         return endedAuctions;
     }
 
-    function getArtworkWithID(uint256 _artworkID) public view returns (address, address, string, bytes32, bytes32, bytes32) {
+    function getArtworkWithID(uint256 _artworkID) public view returns (address, address, string, bytes32, bytes32, bytes32, uint256) {
         var _artwork = artwork[_artworkID];
-        return (_artwork.creator, _artwork.owner, _artwork.imageLink, _artwork.title, _artwork.description, getDescriptionForArtworkState(_artwork.state));
+        return (_artwork.creator, _artwork.owner, _artwork.imageLink, _artwork.title, _artwork.description, getDescriptionForArtworkState(_artwork.state), _artworkID);
     }
 
     function getPortfolio() public view returns (uint256[]) {
