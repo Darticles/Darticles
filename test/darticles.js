@@ -70,11 +70,28 @@ contract('Darticles', (accounts) => {
         const _artworkID = 0
         const _initialPrice = 10000
         const _endTimestamp = 0
+
+        const initialArtwork = await darticlesInstance.getArtworkWithID.call(_artworkID)
+        const initialArtworkState = web3.toUtf8(initialArtwork[5])
+        assert.equal(initialArtworkState, "Available", "The artwork didn't start as available")
+
         await darticlesInstance.startAuction(_artworkID, _initialPrice, _endTimestamp, { from: defaultAccount })
         const activeAuctions = await darticlesInstance.getActiveAuctions.call({ from: defaultAccount })
         const auctionID = 0
 
+        const auctionedArtwork = await darticlesInstance.getArtworkWithID.call(_artworkID)
+        const auctionedArtworkState = web3.toUtf8(auctionedArtwork[5])
+        assert.equal(auctionedArtworkState, "In Auction", "The artwork hasn't been set as In Auction")
+
         assert.equal(auctionID, activeAuctions[0], "Auction ids don't start from 0")
+
+        let addArtworkInTwoAuctionsError = false
+        try {
+            await darticlesInstance.startAuction(_artworkID, _initialPrice, _endTimestamp, { from: defaultAccount })
+        } catch (error) {
+            addArtworkInTwoAuctionsError = true
+        }
+        assert.equal(addArtworkInTwoAuctionsError, true, "An artwork can't be auctioned in two places at the same time")
 
         const auction = await darticlesInstance.getAuctionWithID.call(auctionID, { from: defaultAccount })
         
@@ -100,13 +117,13 @@ contract('Darticles', (accounts) => {
         const title1 = "Title"
         const description1 = "Description"
         await darticlesInstance.addArtwork(imageLink1, title1, description1, { from: defaultAccount })
-        const _artworkID = 0
+        const _artworkID = 1
         const _initialPrice = 10000
         const _endTimestamp = 0
+
         await darticlesInstance.startAuction(_artworkID, _initialPrice, _endTimestamp, { from: defaultAccount })
         const activeAuctions = await darticlesInstance.getActiveAuctions.call({ from: defaultAccount })
-        const auctionID = 0
-
+        const auctionID = 1
 
         const bidder1 = accounts[1]
         const bidder2 = accounts[2]
@@ -174,7 +191,15 @@ contract('Darticles', (accounts) => {
         const endedAuctionsIDS1 = await darticlesInstance.getEndedAuctions.call({from: defaultAccount})
         assert.equal(endedAuctionsIDS1.length, 0, "There is an ended auction before ending auction")
 
-        await darticlesInstance.endAuction(auctionID, { from: bidder2 })
+        try {
+            await darticlesInstance.endAuction(auctionID, { from: bidder2 })
+        } catch (error) {
+            console.log(`ERROR => ${error}`)
+        }
+
+        const artworkAfterAuctionEnding = await darticlesInstance.getArtworkWithID.call(_artworkID)
+        const artworkAfterAuctionEndingState = web3.toUtf8(artworkAfterAuctionEnding[5])
+        assert.equal(artworkAfterAuctionEndingState, "Available", "Artwork has not changed its state to Available after auction ending")
 
         const endedAuctionsIDS2 = await darticlesInstance.getEndedAuctions.call({from: defaultAccount})
         assert.equal(endedAuctionsIDS2.length, 1, "There are no ended auctions after ending auction")

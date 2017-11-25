@@ -19,6 +19,12 @@ contract Darticles {
     }
     
     /**
+        Artworks can't be auctioned if they are currently 
+        in another auction.
+     */
+    enum ArtworkState { Available, InAuction }
+
+    /**
         The artwork represents the art pieces that 
         and artist created.
         
@@ -35,9 +41,10 @@ contract Darticles {
         // The owner can change because the artwork can be transfered.
         address owner;
         
-        string imageLink;      // IPFS link
+        string imageLink;       // IPFS link
         bytes32 title;          // The name of this piece
         bytes32 description;    // Some explanatory notes
+        ArtworkState state;     // Artwork state
     }
     
     /**
@@ -89,6 +96,8 @@ contract Darticles {
     event LogNewBid(uint256 auctionID, address sender, uint256 value);
     event LogOpenedAuction(uint256 auctionID);
     event LogEndedAuction(uint256 auctionID);
+    event LogNumber(uint256 number);
+    event LogText(string text);
     
     // ==================================
     //          CONSTRUCTORS
@@ -137,7 +146,8 @@ contract Darticles {
             owner           : msg.sender, 
             imageLink       : _imageLink, 
             title           : _title, 
-            description     : _description
+            description     : _description,
+            state           : ArtworkState.Available
         });
         artwork[_id] = _artwork;
         portfolioOf[msg.sender].push(_id);
@@ -145,11 +155,11 @@ contract Darticles {
     
 
     function transferArtwork(address _from, address _to, uint256 _id) public {
-        uint256 index = getIndexForArtworkInSenderPortfolio(_from, _id);
+        var index = getIndexForArtworkInSenderPortfolio(_from, _id);
         require (index < portfolioOf[_from].length); // The artwork was not found
         artwork[_id].owner = _to;
         portfolioOf[_to].push(_id);
-        delete(portfolioOf[msg.sender][index]);
+        delete(portfolioOf[_from][index]);
     }
     
     function getIndexForArtworkInSenderPortfolio(address _sender, uint256 _id) private view returns (uint256) {
@@ -175,6 +185,7 @@ contract Darticles {
     )   
         public 
         senderHasArtworkWithID(_artworkID)
+        artworkIDIsAvailableForAuction(_artworkID)
     {
         var auction = Auction({
             owner           : msg.sender,
@@ -189,6 +200,10 @@ contract Darticles {
         activeAuctions.push(auctionID);
         auctionsOf[msg.sender].push(auctionID);
         auctionWithID[auctionID] = auction;
+
+        var _artwork = artwork[_artworkID];
+        _artwork.state = ArtworkState.InAuction;
+
         LogOpenedAuction(auctionID);
     }
 
@@ -223,6 +238,7 @@ contract Darticles {
         }
 
         var _artwork = artwork[auction.artworkID];
+        _artwork.state = ArtworkState.Available;
         refundsFor[_artwork.creator] += bidValue * 10 / 100;
         refundsFor[_artwork.owner] += bidValue * 85 / 100;
         refundsFor[owner] += bidValue * 5 / 100;
@@ -278,9 +294,9 @@ contract Darticles {
         return endedAuctions;
     }
 
-    function getArtworkWithID(uint256 _artworkID) public view returns (address, address, string, bytes32, bytes32) {
+    function getArtworkWithID(uint256 _artworkID) public view returns (address, address, string, bytes32, bytes32, bytes32) {
         var _artwork = artwork[_artworkID];
-        return (_artwork.creator, _artwork.owner, _artwork.imageLink, _artwork.title, _artwork.description);
+        return (_artwork.creator, _artwork.owner, _artwork.imageLink, _artwork.title, _artwork.description, getDescriptionForArtworkState(_artwork.state));
     }
 
     function getPortfolio() public view returns (uint256[]) {
@@ -296,12 +312,26 @@ contract Darticles {
         return refundsFor[_participant];
     }
 
+    function getDescriptionForArtworkState(ArtworkState _state) private pure returns (bytes32) {
+        if (_state == ArtworkState.Available) {
+            return "Available";
+        } else {
+            return "In Auction";
+        }
+    }
+
     // ==================================
     //              MODIFIERS
     // ==================================
     
     modifier senderHasArtworkWithID(uint256 _id) {
         require(getIndexForArtworkInSenderPortfolio(msg.sender, _id) != portfolioOf[msg.sender].length);
+        _;
+    }
+
+    modifier artworkIDIsAvailableForAuction(uint256 _artworkID) {
+        var _artwork = artwork[_artworkID];
+        require(_artwork.state == ArtworkState.Available);
         _;
     }
     
