@@ -7,6 +7,7 @@ import AuctionHome from './routes/Auction/HomeAuction'
 import PortfolioHome from './routes/Portfolio/Portfolio'
 import NewArtwork from './routes/NewArtwork/NewArtwork'
 import Profile from './routes/Profile/Profile'
+import ArtworkDetail from './routes/Portfolio/ArtworkDetail'
 
 export default class Router extends Component {
     profileComponent(text) {
@@ -26,7 +27,8 @@ export default class Router extends Component {
                         <Route path="/upload" component={Uploader} />
                         <Route path="/auctions" component={AuctionHome} />
                         <Route exact path="/portfolio" component={PortfolioHome} />
-                        <Route path="/portfolio/new" component={NewArtwork} />
+                        <Route exact path="/portfolio/new" component={NewArtwork} />
+                        <Route path="/portfolio/:id" component={ArtworkDetail}/>
                         <Route path="/profile" component={() => (<Profile title="PROFLE"/>)} />
                     </Switch>
                 </div>

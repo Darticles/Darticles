@@ -52,6 +52,9 @@ export default class Profile extends Component {
                 })
 
             }.bind(this))
+            .catch( function(error) {
+                console.log(error)
+            })
     }
 
     getProfile() {

@@ -42,9 +42,10 @@ export default class Portfolio extends Component {
             .then(function (artworks) {
                 const web3 = this.props.web3
 
+                var i = 0
                 const dicts = artworks.map((artwork) => {
                     const imageID = artwork[2]
-
+                    
                     const imageLink = "http://localhost:8080/ipfs/" + artwork[2]
                     const title = web3.toUtf8(artwork[3])
                     const description = web3.toUtf8(artwork[4])

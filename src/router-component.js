@@ -5,6 +5,8 @@ import Home from './routes/HomeTruffle';
 import Uploader from './routes/upload';
 import AuctionHome from './routes/Auction/HomeAuction';
 import PortfolioHome from './routes/Portfolio/Portfolio';
+import ArtworkDetail from './routes/Portfolio/ArtworkDetail';
+
 import NewArtwork from './routes/NewArtwork/NewArtwork';
 import Profile from './routes/Profile/Profile'
 import NavigationBar from './routes/NavigationBar/NavigationBar';
@@ -61,7 +63,8 @@ class RouterComponent extends Component {
                     <Route path="/upload" component={() => (<Uploader web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route path="/auctions" component={() => (<AuctionHome web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route exact path="/portfolio" component={() => (<PortfolioHome web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
-                    <Route path="/portfolio/new" component={() => (<NewArtwork web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
+                    <Route exact path="/portfolio/new" component={() => (<NewArtwork web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
+                    <Route exact path="/portfolio/:id" component={(prop) => (<ArtworkDetail web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance} router={prop}/>)}/>
                     <Route path="/profile" component={() => (<Profile web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                 </Switch>
             </div>
