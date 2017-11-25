@@ -77,11 +77,10 @@ export default class ArtworkDetail extends Component {
             <Row>
                 <Col s={1}></Col>
                 <Col s={10}>
-                <Card header={<CardTitle reveal image={artwork.imageLink} waves='light'/>}
-            title={artwork.title}>
-            {artwork.description}
-            </Card>
-
+                    <Card header={<CardTitle reveal image={artwork.imageLink} waves='light'/>}
+                        title={artwork.title}>
+                    {artwork.description}
+                    </Card>
                 </Col>
                 <Col s={1}></Col>
             </Row>
