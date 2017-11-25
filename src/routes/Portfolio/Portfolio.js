@@ -32,11 +32,10 @@ export default class Portfolio extends Component {
     componentWillMount() {
         this
             .getPortfolio()
-            .then(function (response) {
+            .then(function (portfolio) {
                 const darticlesInstance = this.props.darticlesInstance
                 const web3 = this.props.web3
 
-                const portfolio = response[0]
                 return Promise.all(portfolio.map((id) => darticlesInstance.getArtworkWithID.call(id, {from: this.props.defaultAccount})))
                 // console.log(portfolio)
             }.bind(this))
