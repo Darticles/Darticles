@@ -28,30 +28,37 @@ export default class Profile extends Component {
     }
 
     onSubmitPressed() {
-        // const { image, firstName, lastName, nickName } = this.state
-        // if (! (image && firstName && lastName)) { return }
+        // TODO: Add logic to upload image And then go back to porfolio
+        if (this.state.image) {
 
-        // var formData = new FormData();
-        // formData.append("file", this.state.image)
-        // axios
-        //     .post('http://localhost:3000/files', formData, {
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data'
-        //         }
-        //     })
-        //     .then((response) => {
-        //     const fileID = response.data[0]
-        //     if (fileID) {
-        //         console.log(fileID) 
-        //         return this.state.darticlesInstance.addArtwork(fileID, "titulo1", "description1", { from : this.state.defaultAccount }) 
-        //     }
-        //     })
-        //     .then((algo) => {
-        //     document.location="/portfolio"                        
-        //     })    
-        //     .catch(function (error) {
-        //     console.log(error);
-        //     });    
+            if (this.state.title && this.state.description) {
+                var formData = new FormData();
+                formData.append("file", this.state.image)
+
+                axios
+                    .post('http://localhost:3000/files', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(function (response) {
+                        const fileID = response.data[0]
+                        if (fileID) {
+                            console.log(fileID)
+                            return this
+                                .props
+                                .darticlesInstance
+                                .addArtwork(fileID, this.state.title, this.state.description, {from: this.props.defaultAccount})
+                        }
+                    }.bind(this))
+                    .then(function (algo) {
+                        document.location = "/portfolio"
+                    }.bind(document))
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
     }
 
     onTextChanged(key) {
