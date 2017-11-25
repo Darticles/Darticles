@@ -214,12 +214,18 @@ contract Darticles {
         var bidValue = currentBidForAuctionWithID[_auctionID].value;
         
         endedAuctions.push(_auctionID);
-        delete(activeAuctions[index]);
+        if (activeAuctions.length > 1) {
+            activeAuctions[index] = activeAuctions[activeAuctions.length - 1];
+            delete activeAuctions[activeAuctions.length - 1];
+            activeAuctions.length--;
+        } else {
+            activeAuctions = new uint256[](0);
+        }
 
         var _artwork = artwork[auction.artworkID];
-        refundsFor[_artwork.creator] = bidValue * 10 / 100;
-        refundsFor[_artwork.owner] = bidValue * 85 / 100;
-        refundsFor[owner] = bidValue * 5 / 100;
+        refundsFor[_artwork.creator] += bidValue * 10 / 100;
+        refundsFor[_artwork.owner] += bidValue * 85 / 100;
+        refundsFor[owner] += bidValue * 5 / 100;
         transferArtwork(_artwork.owner, msg.sender, auction.artworkID);
 
         LogEndedAuction(_auctionID);

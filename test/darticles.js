@@ -108,28 +108,31 @@ contract('Darticles', (accounts) => {
         const auctionID = 0
 
 
+        const bidder1 = accounts[1]
+        const bidder2 = accounts[2]
+
         // -- BID 1 --
 
         const bid1 = web3.toWei('0.1', 'ether')
-        await darticlesInstance.makeBid(auctionID, { from: defaultAccount, value: bid1 })
+        await darticlesInstance.makeBid(auctionID, { from: bidder1, value: bid1 })
         const currentBidAt1 = await darticlesInstance.getCurrentBidForAuctionWithID.call(auctionID, { from: defaultAccount })
         
         const sender1 = currentBidAt1[0]
         const value1 = new web3.BigNumber(currentBidAt1[1])
 
-        assert.equal(sender1, defaultAccount, "The first bid is not being stored correctly. Addresses do not match")
+        assert.equal(sender1, bidder1, "The first bid is not being stored correctly. Addresses do not match")
         assert.equal(value1, bid1, "The first bid is not being stored correctly. Values do not match")
 
         // -- BID 2 --
 
         const bid2 = web3.toWei('0.3', 'ether')
-        await darticlesInstance.makeBid(auctionID, { from: otherAccount, value: bid2 })
+        await darticlesInstance.makeBid(auctionID, { from: bidder2, value: bid2 })
         const currentBidAt2 = await darticlesInstance.getCurrentBidForAuctionWithID.call(auctionID, { from: defaultAccount })
 
         const sender2 = currentBidAt2[0]
         const value2 = new web3.BigNumber(currentBidAt2[1])
 
-        assert.equal(sender2, otherAccount, "The second bid is not being stored correctly. Addresses do not match")
+        assert.equal(sender2, bidder2, "The second bid is not being stored correctly. Addresses do not match")
         assert.equal(value2, bid2, "The second bid is not being stored correctly. Values do not match")
 
         // -- BID 3 --
@@ -138,7 +141,7 @@ contract('Darticles', (accounts) => {
         let bid3Exception = false
 
         try {
-            await darticlesInstance.makeBid(auctionID, { from: defaultAccount, value: bid3 })
+            await darticlesInstance.makeBid(auctionID, { from: bidder1, value: bid3 })
         } catch (error) {
             bid3Exception = true
         }
@@ -149,38 +152,35 @@ contract('Darticles', (accounts) => {
         const sender3 = currentBidAt3[0]
         const value3 = new web3.BigNumber(currentBidAt3[1])
 
-        assert.equal(sender3, otherAccount, "The third bid is not being stored correctly. Addresses do not match")
+        assert.equal(sender3, bidder2, "The third bid is not being stored correctly. Addresses do not match")
         assert.equal(value3, bid2, "The third bid is not being stored correctly. Values do not match")
+        
+        const refundsForBidder1 = await darticlesInstance.getRefundsFor.call(bidder1)
+        const refundsForBidder2 = await darticlesInstance.getRefundsFor.call(bidder2)
 
-        const refundsForDefaultAccount = await darticlesInstance.getRefundsFor.call(defaultAccount)        
-        const refundsForOtherAccount = await darticlesInstance.getRefundsFor.call(otherAccount)
+        assert.equal(refundsForBidder1, bid1, "No founds were refunded for other account after discarding bid1")
+        assert.equal(refundsForBidder2, 0, "The contract has refunded ether for default account without reason")
 
-        assert.equal(refundsForDefaultAccount, bid1, "No founds were refunded for default account after discarding bid1")
-        assert.equal(refundsForOtherAccount, 0, "The contract has refunded ether for other account without reason")
-
-        let endAuctionFromDefaultAccountException = false
-
-        try {
-            await darticlesInstance.endAuction(auctionID, { from: defaultAccount })
-        } catch (error) {
-            console.log(`Error => ${error}`)
-            endAuctionFromDefaultAccountException = true
-        }
+        let endAuctionFromBidder1Exception = false
 
         try {
-            await darticlesInstance.endAuction(auctionID, { from: otherAccount })
+            await darticlesInstance.endAuction(auctionID, { from: bidder1 })
         } catch (error) {
-            console.log(`Error => ${error}`)
+            endAuctionFromBidder1Exception = true
         }
-        assert.equal(endAuctionFromDefaultAccountException, true, "Ending auction using a loser account did not raise an exception")
 
-        // await darticlesInstance.endAuction(auctionID, { from: otherAccount })
+        assert.equal(endAuctionFromBidder1Exception, true, "Ending auction using a loser account did not raise an exception")
 
-        const activeAuctionsIDS = await darticlesInstance.getActiveAuctions.call({from: defaultAccount})
-        console.log(`Active auctions => ${activeAuctionsIDS}`)
+        const endedAuctionsIDS1 = await darticlesInstance.getEndedAuctions.call({from: defaultAccount})
+        assert.equal(endedAuctionsIDS1.length, 0, "There is an ended auction before ending auction")
 
-        const endedAuctionsIDS = await darticlesInstance.getEndedAuctions.call({from: defaultAccount})
-        console.log(`Ended auctions => ${endedAuctionsIDS}`)
+        await darticlesInstance.endAuction(auctionID, { from: bidder2 })
+
+        const endedAuctionsIDS2 = await darticlesInstance.getEndedAuctions.call({from: defaultAccount})
+        assert.equal(endedAuctionsIDS2.length, 1, "There are no ended auctions after ending auction")
+
+        const refundsForArtworkCreator = await darticlesInstance.getRefundsFor.call(defaultAccount)
+        assert.equal(refundsForArtworkCreator, bid2, "Refunds were not correctly distributed after ending auction")
     })
 
 })
