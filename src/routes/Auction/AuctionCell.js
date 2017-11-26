@@ -1,19 +1,24 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
+import {Col, Card, CardTitle} from 'react-materialize'
+
 
 import './css/AuctionCell.css'
 
 class AuctionCell extends Component {
+    constructor(props) {
+        super(props)
+    }
+
     render() {
-        return(
-            <div className="pure-u-1-4">
-                <div className="card">
-                    <img className="full-width-image" src="https://k32.kn3.net/taringa/3/2/4/8/6/1//doggystar/5AB.gif"/>
-                    <div className="card-text">
-                        <p className="big">Mi trabajo aqui ha terminado</p>
-                        <p className="small">Leonard Nimoy</p>
-                    </div>
-                </div>
-            </div>
+        return (
+            <Col s={3}>
+                <Card className='small'
+                    header={<CardTitle image={"https://cdn-images-1.medium.com/max/621/1*3cd64RjjJiVuAFTEkw5-sA.png"}>Works title?</CardTitle>}
+                    actions={[<a onClick={() => {
+                    }}>Show Artwork Detail</a>]}>
+                    It works
+                </Card>
+            </Col>
         )
     }
 }

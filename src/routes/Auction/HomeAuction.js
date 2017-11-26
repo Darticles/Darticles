@@ -1,5 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
+import {Row, Col, Button, CardPanel, Icon} from 'react-materialize'
 import Contract from 'truffle-contract'
 import classnames from 'classnames'
 
@@ -14,7 +15,7 @@ import Darticles from '../../../build/contracts/Darticles.json'
 import getWeb3 from '../../utils/getWeb3'
 import promisify from '../../utils/promisify'
 
-class App extends Component {
+export default class HomeAuction extends Component {
     constructor(props) {
         super(props)
 
@@ -39,6 +40,7 @@ class App extends Component {
     initialize() {
         return this
             .loadAuctions()
+            .then((auctions) => this.setState({...this.state, auctions}))
             .catch(function (error) {
                 console.log(error)
             })
@@ -47,24 +49,22 @@ class App extends Component {
     getAuctionsDetails(auctions) {
         const defaultAccount = this.props.defaultAccount
         const darticlesInstance = this.props.darticlesInstance
-
         //Get Auction Details
         return Promise.all(auctions.map((id) => {
-            darticlesInstance
-                .getAuctionWithID
-                .call(id, {from: defaultAccount})
+            return darticlesInstance.getAuctionWithID.call(id, {from: defaultAccount})
         }))
     }
 
     parseAuctionsResponse(response) {
         //Parse Contract Response
+        console.log(`in parseAuctionsResponse, response is => ${response}`)
+        
         const auctions = response.map((r) => {
             // auction.owner, auction.artworkID, auction.initialPrice, auction.endTimestamp,
             // auctionState
             return {owner: r[0], artworkID: r[1], initialPrice: r[2], endTimestamp: r[3], auctionState: r[4]}
         })
 
-        console.log(auctions)
         return Promise.resolve(auctions)
     }
 
@@ -79,12 +79,10 @@ class App extends Component {
         const {darticlesInstance, defaultAccount} = this.props
 
         console.log(`It's about to load proposals from account ${defaultAccount}`)
-        console.log(`Voting instance address: ${darticlesInstance.address}`)
+        console.log(`Darticles instance address: ${darticlesInstance.address}`)
 
         //Get Active Auctions
-        return darticlesInstance
-            .getActiveAuctions
-            .call({from: defaultAccount})
+        return darticlesInstance.getActiveAuctions.call({from: defaultAccount})
             .then(this.getAuctionsDetails.bind(this))
             .then(this.parseAuctionsResponse.bind(this))
             .then(this.loadArtworks.bind(this))
@@ -97,21 +95,21 @@ class App extends Component {
         } = this.props
         const {auctions} = this.state
 
-        const cells = auctions.map(this.createAuctionCell)
+        console.log(`Auctions => ${auctions}`)
+
+        const cells = auctions.map((auction, index) => this.createAuctionCell(auction, index))
+
+        console.log(`Cells => ${cells}`)
 
         return (
-            <div>
-                <div className="pure-g">
-                    { cells }
-                </div>
-            </div>
+            <Row>
+                { cells }
+            </Row>
         )
     }
 
-    createAuctionCell(auction) {
-        return (<AuctionCell/>)
+    createAuctionCell(auction, index) {
+        return (<AuctionCell auction={auction} key={index} />)
     }
 
 }
-
-export default App;

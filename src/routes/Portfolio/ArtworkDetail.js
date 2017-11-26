@@ -87,7 +87,25 @@ export default class ArtworkDetail extends Component {
                 { from: defaultAccount }
             )
 
-            document.location.href = "/auctions"
+            console.log(`
+                It has been created a new auction.
+
+                artworkID => ${artworkID}
+                basePrice => ${web3.toWei(basePrice)}
+                endTime => ${endTime.getTime()} (raw: ${endTime})
+                defaultAccount => ${defaultAccount}
+            `)
+
+            /*
+                It has been created a new auction.
+
+                artworkID => 2
+                basePrice => 1000000000000000000
+                endTime => 1512010800000 (raw: Thu Nov 30 2017 00:00:00 GMT-0300 (-03))
+                defaultAccount => 0x28d41ba13e66a8a5ec48dcd687ffced07e3d8ecd
+            */
+
+            // document.location.href = "/auctions"
         } catch (error) {
             console.log(`Error during place auction ${error}`)
         }
