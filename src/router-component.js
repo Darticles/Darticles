@@ -6,7 +6,7 @@ import Home from './routes/HomeTruffle';
 import Uploader from './routes/upload';
 import AuctionHome from './routes/Auction/HomeAuction';
 import AuctionDetail from './routes/Auction/AuctionDetail';
-
+import Balance from './routes/Balance/Balance'
 import PortfolioHome from './routes/Portfolio/Portfolio';
 import ArtworkDetail from './routes/Portfolio/ArtworkDetail';
 
@@ -71,6 +71,7 @@ class RouterComponent extends Component {
                     <Route exact path="/portfolio/new" component={() => (<NewArtwork web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route exact path="/portfolio/:id" component={(prop) => (<ArtworkDetail web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance} router={prop}/>)}/>
                     <Route path="/profile" component={() => (<Profile web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
+                    <Route path="/balance" component={() => (<Balance web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                 </Switch>
             </div>
             </BrowserRouter>    
