@@ -37,24 +37,17 @@ export default class ArtworkDetail extends Component {
         const {web3} = this.props
         //Load artworks for auctions
 
-        return darticlesInstance
-            .getArtworkWithID
-            .call(auction.artworkID, {from: defaultAccount})
-            .then(function (_artwork) {
-                const artwork = {
-                    creator: _artwork[0],
-                    artworkOwner: _artwork[1],
-                    imageLink: "http://localhost:8080/ipfs/" + _artwork[2],
-                    title: web3.toUtf8(_artwork[3]),
-                    description: web3.toUtf8(_artwork[4]),
-                    state: web3.toUtf8(_artwork[5])
-                }
+        const _artwork = await darticlesInstance.getArtworkWithID.call(auction.artworkID, {from: defaultAccount})
+        const artwork = {
+            creator: _artwork[0],
+            artworkOwner: _artwork[1],
+            imageLink: "http://localhost:8080/ipfs/" + _artwork[2],
+            title: web3.toUtf8(_artwork[3]),
+            description: web3.toUtf8(_artwork[4]),
+            state: web3.toUtf8(_artwork[5])
+        }
 
-                return artwork
-            })
-            .catch(function(error){
-                console.log(error)
-            })
+        return artwork
     }
 
     async initialize() {
@@ -72,18 +65,26 @@ export default class ArtworkDetail extends Component {
             auctionID: r[5]
         }
 
+        const artwork = await this.loadArtwork(auction)
+        this.setState({
+            ...this.state,
+            auction, 
+            artwork,
+            ready: true
+        })
+
         // this.setState({
         //     ...this.state,
         //     auction,
         // })
 
-        this.loadArtwork(auction).then(function(artwork){
-            this.setState({
-                ...this.state,
-                artwork,
-                ready: true
-            })
-        }.bind(this)) 
+        // this.loadArtwork(auction).then(function(artwork){
+        //     this.setState({
+        //         ...this.state,
+        //         artwork,
+        //         ready: true
+        //     })
+        // }.bind(this)) 
     }
 
     retrieveAuction() {
@@ -105,23 +106,18 @@ export default class ArtworkDetail extends Component {
 
     getDetail() {
         const {auction} = this.state
-
+        const {title, description, imageLink} = this.state.artwork
         return (
             <Row>
                 <Col s={1}></Col>
                 <Col s={10}>
-                    {/* <Card
+                    <Card
                         header={< CardTitle reveal image = {
                         imageLink
                     }
                     waves = 'light' />}
-                        title={`${title.toUpperCase()} - ${description}`}
-                        actions={editing
-                        ? [placeAuctionAction, cancelAction]
-                        : [startAuctionAction]}>
-
-                        {editingFields}
-                    </Card> */}
+                        title={`${title.toUpperCase()} - ${description}`}>
+                    </Card>
 
                 </Col>
                 <Col s={1}></Col>
@@ -132,9 +128,6 @@ export default class ArtworkDetail extends Component {
     render() {
         return (
             <Container>
-                <h1>Auction Detail {this.state.auction
-                        ? this.state.auction.auctionID
-                        : ""}</h1>
                 {this.state.ready
                     ? this.getDetail()
                     : <div/>}
