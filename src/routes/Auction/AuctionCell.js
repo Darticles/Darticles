@@ -10,13 +10,16 @@ class AuctionCell extends Component {
     }
 
     render() {
+        const {owner, artworkID, initialPrice, endTimestamp, auctionState, artwork} = this.props.auction
+        const {creator, artworkOwner, imageLink, title, description, state} = artwork
+
         return (
             <Col s={3}>
                 <Card className='small'
-                    header={<CardTitle image={"https://cdn-images-1.medium.com/max/621/1*3cd64RjjJiVuAFTEkw5-sA.png"}>Works title?</CardTitle>}
+                    header={<CardTitle image={imageLink}>{title}</CardTitle>}
                     actions={[<a onClick={() => {
-                    }}>Show Artwork Detail</a>]}>
-                    It works
+                    }}>See details</a>]}>
+                    {auctionState}
                 </Card>
             </Col>
         )

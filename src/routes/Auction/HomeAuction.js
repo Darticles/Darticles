@@ -40,7 +40,9 @@ export default class HomeAuction extends Component {
     initialize() {
         return this
             .loadAuctions()
-            .then((auctions) => this.setState({...this.state, auctions}))
+            .then((auctions) => {
+                this.setState({...this.state, auctions})
+            })
             .catch(function (error) {
                 console.log(error)
             })
@@ -56,23 +58,43 @@ export default class HomeAuction extends Component {
     }
 
     parseAuctionsResponse(response) {
+        const {web3} = this.props
         //Parse Contract Response
-        console.log(`in parseAuctionsResponse, response is => ${response}`)
-        
         const auctions = response.map((r) => {
             // auction.owner, auction.artworkID, auction.initialPrice, auction.endTimestamp,
             // auctionState
-            return {owner: r[0], artworkID: r[1], initialPrice: r[2], endTimestamp: r[3], auctionState: r[4]}
+            return {
+                owner           : r[0], 
+                artworkID       : r[1], 
+                initialPrice    : r[2], 
+                endTimestamp    : r[3], 
+                auctionState    : web3.toUtf8(r[4]), 
+            }
         })
 
         return Promise.resolve(auctions)
     }
 
-    loadArtworks(auctions) {
+    async loadArtworks(auctions) {
         const defaultAccount = this.props.defaultAccount
         const darticlesInstance = this.props.darticlesInstance
+        const { web3 } = this.props
         //Load artworks for auctions
-        return Promise.all(auctions.map((auction) => darticlesInstance.getArtworkWithID.call(auction.artworkID, {from: defaultAccount})))
+        const _artworks = await Promise.all(auctions.map((auction) => darticlesInstance.getArtworkWithID.call(auction.artworkID, {from: defaultAccount})))
+        const artworks = _artworks.map((artwork) => {
+            return {
+                creator     : artwork[0],
+                artworkOwner: artwork[1],
+                imageLink   : "http://localhost:8080/ipfs/" + artwork[2],
+                title       : web3.toUtf8(artwork[3]),
+                description : web3.toUtf8(artwork[4]),
+                state       : web3.toUtf8(artwork[5]),
+            }
+        })
+        return auctions.map((auction, index) => {
+            auction.artwork = artworks[index]
+            return auction
+        })
     }
 
     loadAuctions() {
@@ -86,6 +108,10 @@ export default class HomeAuction extends Component {
             .then(this.getAuctionsDetails.bind(this))
             .then(this.parseAuctionsResponse.bind(this))
             .then(this.loadArtworks.bind(this))
+            .then((artwork) => {
+                console.log(`Artwork => ${artwork}`)
+                return artwork
+            })
     }
 
     render() {
@@ -95,15 +121,15 @@ export default class HomeAuction extends Component {
         } = this.props
         const {auctions} = this.state
 
-        console.log(`Auctions => ${auctions}`)
-
         const cells = auctions.map((auction, index) => this.createAuctionCell(auction, index))
-
-        console.log(`Cells => ${cells}`)
 
         return (
             <Row>
-                { cells }
+                <Col s={1}></Col>
+                <Col s={10}>
+                    { cells }
+                </Col>
+                <Col s={1}></Col>
             </Row>
         )
     }
