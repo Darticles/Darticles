@@ -14,9 +14,8 @@ import Darticles from '../../../build/contracts/Darticles.json'
 import getWeb3 from '../../utils/getWeb3'
 import promisify from '../../utils/promisify'
 
-
 class App extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
 
         // Set default state
@@ -25,77 +24,92 @@ class App extends Component {
             defaultAccount: undefined,
             darticlesInstance: undefined,
             errorMessage: undefined,
-            web3: undefined,
+            web3: undefined
         }
     }
-    
+
     componentWillMount() {
-        this.initialize()
-            .then(() => { 
-                this.watchNewProposals() 
-                this.watchNewVotes()
+        this
+            .initialize()
+            .catch(function (error) {
+                console.log(error)
             })
     }
 
-    async initialize() {
-        const { web3 } = await getWeb3
-    
-        // Create voting entity from contract abi
-        const darticles = Contract(Darticles)
-        darticles.setProvider(web3.currentProvider)
-    
-        const accounts = await promisify(web3.eth.getAccounts)
-        const defaultAccount = accounts[0]
-    
-        const darticlesInstance = await darticles.deployed()
-    
-        this.setState({
-            ...this.state,
-            web3,
-            defaultAccount,
-            darticlesInstance,
-        })
-    
-        this.loadAuctions()
+    initialize() {
+        return this
+            .loadAuctions()
+            .catch(function (error) {
+                console.log(error)
+            })
     }
 
-    async loadAuctions() {
-        const { web3, darticlesInstance, defaultAccount } = this.state
-    
+    getAuctionsDetails(auctions) {
+        const defaultAccount = this.props.defaultAccount
+        const darticlesInstance = this.props.darticlesInstance
+
+        //Get Auction Details
+        return Promise.all(auctions.map((id) => {
+            darticlesInstance
+                .getAuctionWithID
+                .call(id, {from: defaultAccount})
+        }))
+    }
+
+    parseAuctionsResponse(response) {
+        //Parse Contract Response
+        const auctions = response.map((r) => {
+            // auction.owner, auction.artworkID, auction.initialPrice, auction.endTimestamp,
+            // auctionState
+            return {owner: r[0], artworkID: r[1], initialPrice: r[2], endTimestamp: r[3], auctionState: r[4]}
+        })
+
+        console.log(auctions)
+        return Promise.resolve(auctions)
+    }
+
+    loadArtworks(auctions) {
+        const defaultAccount = this.props.defaultAccount
+        const darticlesInstance = this.props.darticlesInstance
+        //Load artworks for auctions
+        return Promise.all(auctions.map((auction) => darticlesInstance.getArtworkWithID.call(auction.artworkID, {from: defaultAccount})))
+    }
+
+    loadAuctions() {
+        const {darticlesInstance, defaultAccount} = this.props
+
         console.log(`It's about to load proposals from account ${defaultAccount}`)
         console.log(`Voting instance address: ${darticlesInstance.address}`)
-    
-        try {
-            const auctionIDs = await darticlesInstance.getAuctions.call(defaultAccount)
-            const auctions = auctionIDs.map((auctionID) => darticlesInstance.auctionWithID(auctionID))
-            this.setState({
-                ...this.state,
-                auctions,
-            })
-        } catch (error) {
-            console.log(`Error loading auctions: ${error}`)
-        }
+
+        //Get Active Auctions
+        return darticlesInstance
+            .getActiveAuctions
+            .call({from: defaultAccount})
+            .then(this.getAuctionsDetails.bind(this))
+            .then(this.parseAuctionsResponse.bind(this))
+            .then(this.loadArtworks.bind(this))
     }
 
     render() {
-        const { className, ...props } = this.props
-        const { auctions } = this.state
+        const {
+            className,
+            ...props
+        } = this.props
+        const {auctions} = this.state
 
         const cells = auctions.map(this.createAuctionCell)
 
-        return(
+        return (
             <div>
                 {/* <div className="pure-g">
                     { cells }
                 </div> */}
             </div>
-        )   
+        )
     }
 
-    createAuctionCell (auction) {
-        return (
-            <AuctionCell />
-        )
+    createAuctionCell(auction) {
+        return (<AuctionCell/>)
     }
 
 }
