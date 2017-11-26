@@ -275,7 +275,7 @@ contract Darticles {
         return (profileOf[msg.sender].imageLink, profileOf[msg.sender].firstName, profileOf[msg.sender].lastName, profileOf[msg.sender].nickName);
     }
 
-    function getAuctionWithID(uint256 _auctionID) public view returns (address, uint256, uint256, uint256, bytes32) {
+    function getAuctionWithID(uint256 _auctionID) public view returns (address, uint256, uint256, uint256, bytes32, uint256) {
         var auction = auctionWithID[_auctionID];
         bytes32 auctionState = "";
         if (auction.state == AuctionState.Active) {
@@ -283,7 +283,7 @@ contract Darticles {
         } else {
             auctionState = "Ended";
         }
-        return (auction.owner, auction.artworkID, auction.initialPrice, auction.endTimestamp, auctionState);
+        return (auction.owner, auction.artworkID, auction.initialPrice, auction.endTimestamp, auctionState, _auctionID);
     }
 
     function getActiveAuctions() public view returns (uint256[]) {

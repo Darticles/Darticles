@@ -68,7 +68,8 @@ export default class HomeAuction extends Component {
                 artworkID       : r[1], 
                 initialPrice    : r[2], 
                 endTimestamp    : r[3], 
-                auctionState    : web3.toUtf8(r[4]), 
+                auctionState    : web3.toUtf8(r[4]),
+                auctionID       : r[5]
             }
         })
 
@@ -95,6 +96,10 @@ export default class HomeAuction extends Component {
             auction.artwork = artworks[index]
             return auction
         })
+    }
+
+    auctionCellPressed(id) {
+        document.location.href = "/auctions/" + id
     }
 
     loadAuctions() {
@@ -135,7 +140,7 @@ export default class HomeAuction extends Component {
     }
 
     createAuctionCell(auction, index) {
-        return (<AuctionCell auction={auction} key={index} />)
+        return (<AuctionCell onClick={this.auctionCellPressed.bind(this)} auction={auction} key={index} />)
     }
 
 }

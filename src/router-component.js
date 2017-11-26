@@ -5,6 +5,8 @@ import { Container, ProgressBar } from 'react-materialize'
 import Home from './routes/HomeTruffle';
 import Uploader from './routes/upload';
 import AuctionHome from './routes/Auction/HomeAuction';
+import AuctionDetail from './routes/Auction/AuctionDetail';
+
 import PortfolioHome from './routes/Portfolio/Portfolio';
 import ArtworkDetail from './routes/Portfolio/ArtworkDetail';
 
@@ -63,7 +65,8 @@ class RouterComponent extends Component {
                 <Switch>
                     <Route exact path="/" component={() => (<Home web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route path="/upload" component={() => (<Uploader web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
-                    <Route path="/auctions" component={() => (<AuctionHome web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
+                    <Route exact path="/auctions" component={() => (<AuctionHome web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
+                    <Route exact path="/auctions/:id" component={(prop) => (<AuctionDetail web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance} router={prop}/>)}/>
                     <Route exact path="/portfolio" component={() => (<PortfolioHome web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route exact path="/portfolio/new" component={() => (<NewArtwork web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance}/>)}/>
                     <Route exact path="/portfolio/:id" component={(prop) => (<ArtworkDetail web3={this.state.web3} defaultAccount={this.state.defaultAccount} darticlesInstance={this.state.darticlesInstance} router={prop}/>)}/>
