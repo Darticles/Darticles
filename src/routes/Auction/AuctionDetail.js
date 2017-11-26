@@ -30,6 +30,20 @@ export default class ArtworkDetail extends Component {
             editing: false
         }
     }
+    
+    async getCurrentBid(auction) {
+        const defaultAccount = this.props.defaultAccount
+        const darticlesInstance = this.props.darticlesInstance
+        const {web3} = this.props
+
+        const _bid = await darticlesInstance.getCurrentBidForAuctionWithID.call(auction.auctionID, {from: defaultAccount})
+        const bid = {
+            from : _bid[0],
+            value : _bid[1]
+        }
+
+        return bid
+    }
 
     async loadArtwork(auction) {
         const defaultAccount = this.props.defaultAccount
@@ -66,25 +80,16 @@ export default class ArtworkDetail extends Component {
         }
 
         const artwork = await this.loadArtwork(auction)
+
+        const current_bid = await this.getCurrentBid(auction)
+
         this.setState({
             ...this.state,
             auction, 
             artwork,
+            current_bid,
             ready: true
         })
-
-        // this.setState({
-        //     ...this.state,
-        //     auction,
-        // })
-
-        // this.loadArtwork(auction).then(function(artwork){
-        //     this.setState({
-        //         ...this.state,
-        //         artwork,
-        //         ready: true
-        //     })
-        // }.bind(this)) 
     }
 
     retrieveAuction() {
@@ -104,9 +109,45 @@ export default class ArtworkDetail extends Component {
         this.initialize()
     }
 
+    onBidValueChanged(event) {
+        const value = event.target.value
+        this.setState({
+            ...this.state,
+            myBid : value
+        })
+    }
+
+    postBid() {
+        const defaultAccount = this.props.defaultAccount
+        const darticlesInstance = this.props.darticlesInstance
+        const {web3} = this.props
+        const auction = this.state.auction
+
+        if (this.state.myBid) {
+            const weiValue = web3.toWei(this.state.myBid, 'ether')
+            darticlesInstance.makeBid.call(auction.auctionID, {from: defaultAccount, value: weiValue}).then(function(response) {
+                console.log(response)
+            }.bind(this)).catch(function(error){
+                console.log(error)
+            })           
+        }
+    }
+
+    getEditingFields() {
+        return (
+            <Row>
+                <Input label="Bid (Ether)" type="number" s={6} onChange={this.onBidValueChanged.bind(this)}/>
+                <Button onClick={this.postBid.bind(this)}>Make Bid</Button>
+            </Row>
+        )
+    }
+
     getDetail() {
         const {auction} = this.state
         const {title, description, imageLink} = this.state.artwork
+
+        const editingFields = this.getEditingFields()
+        
         return (
             <Row>
                 <Col s={1}></Col>
@@ -117,6 +158,10 @@ export default class ArtworkDetail extends Component {
                     }
                     waves = 'light' />}
                         title={`${title.toUpperCase()} - ${description}`}>
+
+                    {"Current Bid: " + this.state.current_bid.value}
+                    { editingFields }
+
                     </Card>
 
                 </Col>

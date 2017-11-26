@@ -116,7 +116,6 @@ export default class ArtworkDetail extends Component {
             ...this.state,
             basePrice
         })
-
     }
 
     endTimeChanged(event) {
