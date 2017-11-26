@@ -125,7 +125,7 @@ export default class ArtworkDetail extends Component {
 
         if (this.state.myBid) {
             const weiValue = web3.toWei(this.state.myBid, 'ether')
-            darticlesInstance.makeBid.call(auction.auctionID, {from: defaultAccount, value: weiValue}).then(function(response) {
+            darticlesInstance.makeBid(auction.auctionID, {from: defaultAccount, value: weiValue}).then(function(response) {
                 console.log(response)
             }.bind(this)).catch(function(error){
                 console.log(error)

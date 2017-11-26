@@ -19,7 +19,6 @@ export default class Balance extends Component {
     async fetchBalance() {
         const { darticlesInstance, defaultAccount } = this.props
         const balance = await darticlesInstance.getRefundsFor.call(defaultAccount)
-        console.log(`Balance => ${balance}`)
         this.setState({
             ...this.state,
             balance: balance.c[0]
@@ -28,7 +27,6 @@ export default class Balance extends Component {
 
     onAmountChange(event) {
         const withdrawAmount = event.target.value
-        console.log(`New amount is ${withdrawAmount}`)
         this.setState({
             ...this.state,
             withdrawAmount
