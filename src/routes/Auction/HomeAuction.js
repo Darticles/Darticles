@@ -101,9 +101,9 @@ class App extends Component {
 
         return (
             <div>
-                {/* <div className="pure-g">
+                <div className="pure-g">
                     { cells }
-                </div> */}
+                </div>
             </div>
         )
     }

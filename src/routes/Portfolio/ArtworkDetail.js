@@ -2,7 +2,7 @@
 import React, {Component} from 'react'
 import Contract from 'truffle-contract'
 import classnames from 'classnames'
-import {Card, CardTitle, Container, Row, Col} from 'react-materialize'
+import {Card, CardTitle, Container, Row, Col, Button, Input} from 'react-materialize'
 
 // Components
 import NavigationBar from '../NavigationBar/NavigationBar'
@@ -22,35 +22,30 @@ export default class ArtworkDetail extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            editing: false
+        }
     }
 
-    initialize() {
-        this
-            .retrieveArtwork()
-            .then(function (response) {
-                const web3 = this.props.web3
+    async initialize() {
+        const { web3 } = this.props
 
-                console.log(response)
+        const response = await this.retrieveArtwork()    
+        console.log(response)
 
-                const artwork = {
-                    creator: response[0],
-                    owner: response[1],
-                    imageLink: "http://localhost:8080/ipfs/" + response[2],
-                    title: web3.toUtf8(response[3]),
-                    description: web3.toUtf8(response[4])
-                }
+        const artwork = {
+            creator: response[0],
+            owner: response[1],
+            imageLink: "http://localhost:8080/ipfs/" + response[2],
+            title: web3.toUtf8(response[3]),
+            description: web3.toUtf8(response[4])
+        }
 
-                this.setState({
-                    ...this.state,
-                    artwork,
-                    ready: true
-                })
-
-            }.bind(this))
-            .catch(function (error) {
-                console.log(error)
-            })
+        this.setState({
+            ...this.state,
+            artwork,
+            ready: true
+        })
     }
 
     retrieveArtwork() {
@@ -70,40 +65,97 @@ export default class ArtworkDetail extends Component {
         this.initialize()
     }
 
+    startEditingAuction() {
+        this.setState({
+            ...this.state,
+            editing: true
+        })
+    }
+
+    async placeAuction() {
+        const { basePrice, endTime } = this.state
+        if (!basePrice || !endTime) return
+
+        try {
+            const { web3, router, defaultAccount, darticlesInstance } = this.props
+            const artworkID = router.match.params.id
+
+            await darticlesInstance.startAuction(
+                artworkID, 
+                web3.toWei(basePrice), 
+                endTime.getTime(), 
+                { from: defaultAccount }
+            )
+
+            document.location.href = "/auctions"
+        } catch (error) {
+            console.log(`Error during place auction ${error}`)
+        }
+    }
+
+    cancelAuctionPlace() {
+        this.setState({
+            ...this.state,
+            editing: false
+        })
+    }
+
+    basePriceChanged(event) {
+        const basePrice = event.target.value
+        console.log(`Base price => ${basePrice}`)
+        this.setState({
+            ...this.state,
+            basePrice
+        })
+
+    }
+
+    endTimeChanged(event) {
+        const endTime = new Date(event.target.value)
+        console.log(`End time => ${endTime}`)
+        this.setState({
+            ...this.state,
+            endTime
+        })
+
+    }
+
     getDetail() {
-        const artwork = this.state.artwork
+        const { artwork, editing } = this.state
+        const { imageLink, title, description } = artwork
+        
+        const startAuctionAction =  (<Button onClick={this.startEditingAuction.bind(this)} key="0">Start an auction</Button>)
+
+        const placeAuctionAction = (<Button onClick={this.placeAuction.bind(this)} key="0">Place auction</Button>)
+        const cancelAction = (<Button onClick={this.cancelAuctionPlace.bind(this)} className="red" key="1">Cancel</Button>)
+
+        const editingFields = editing ? this.getEditingFields() : undefined
 
         return (
             <Row>
                 <Col s={1}></Col>
                 <Col s={10}>
-                    <Card header={<CardTitle reveal image={artwork.imageLink} waves='light'/>}
-                        title={artwork.title}>
-                    {artwork.description}
+                    <Card 
+                        header={<CardTitle reveal 
+                        image={ imageLink } waves='light'/>}
+                        title={`${title.toUpperCase()} - ${description}`}
+                        actions={editing ? [placeAuctionAction, cancelAction] : [startAuctionAction]} >
+
+                        { editingFields }
                     </Card>
+
                 </Col>
                 <Col s={1}></Col>
             </Row>
+        )
+    }
 
-            // <div class="pure-g">
-            //     <div className="pure-u-1-24"></div>
-            //     <div
-            //         className="pure-u-12-24"
-            //         style={{
-            //         backgroundColor: "black"
-            //     }}>
-            //         <div className="img-container">
-            //             <img className="full-width-image" src={artwork.imageLink}/>
-            //         </div>
-            //     </div>
-            //     <div className="pure-u-1-24"></div>
-            //     <div className="pure-u-9-24">
-            //         <h2>{artwork.title}</h2>
-            //         <h3>{artwork.description}</h3>
-            //     </div>
-
-            //     <div className="pure-u-1-24"></div>
-            // </div>
+    getEditingFields() {
+        return (
+            <Row>
+                <Input label="Base price (Ether)" type="number" s={6} onChange={this.basePriceChanged.bind(this)} />
+                <Input label="End time" type="date" s={6} onChange={this.endTimeChanged.bind(this)} />
+            </Row>
         )
     }
 

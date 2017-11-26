@@ -42,39 +42,23 @@ export default class NewArtwork extends Component {
         })
     }
 
-    onSubmitPressed() {
-        // TODO: Add logic to upload image And then go back to porfolio
-        if (this.state.image) {
-            // document.location="/portfolio"
+    async onSubmitPressed() {
+        const { image, title, description } = this.state
+        const { darticlesInstance, defaultAccount } = this.props
 
-            if (this.state.title && this.state.description) {
-                var formData = new FormData();
-                formData.append("file", this.state.image)
+        if (!(image && title && description)) return
 
-                axios
-                    .post('http://localhost:3000/files', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
-                    .then(function (response) {
-                        const fileID = response.data[0]
-                        if (fileID) {
-                            console.log(fileID)
-                            return this
-                                .props
-                                .darticlesInstance
-                                .addArtwork(fileID, this.state.title, this.state.description, {from: this.props.defaultAccount})
-                        }
-                    }.bind(this))
-                    .then(function (algo) {
-                        document.location = "/portfolio"
-                    }.bind(document))
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
-        }
+        let formData = new FormData();
+        formData.append("file", image)
+
+        const headers = { 'Content-Type': 'multipart/form-data' }
+        const options = { headers }
+        const response = await axios.post('http://localhost:3000/files', formData, options)
+        const fileID = response.data[0]
+        if (!fileID) return
+        console.log(fileID)
+        await darticlesInstance.addArtwork(fileID, title, description, {from: defaultAccount})
+        document.location = "/portfolio"
     }
 
     getUploadForm() {
@@ -94,23 +78,14 @@ export default class NewArtwork extends Component {
                         <input
                             className="full-width"
                             placeholder="Title"
-                            onChange={this
-                            .onTextChanged("title")
-                            .bind(this)}/>
+                            onChange={this.onTextChanged("title").bind(this)} />
                         <input
                             className="full-width"
                             rows="4"
                             cols="50"
                             placeholder="Description"
-                            onChange={this
-                            .onTextChanged("description")
-                            .bind(this)}></input>
-                        {/* <p><input className="full-width" placeholder="Description"/></p> */}
-
-                        <Button
-                            onClick={this
-                            .onSubmitPressed
-                            .bind(this)}>
+                            onChange={this.onTextChanged("description").bind(this)} />
+                        <Button onClick={this.onSubmitPressed.bind(this)}>
                             Submit
                         </Button>
                     </CardPanel>
