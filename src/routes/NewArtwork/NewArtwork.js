@@ -53,7 +53,7 @@ export default class NewArtwork extends Component {
 
         const headers = { 'Content-Type': 'multipart/form-data' }
         const options = { headers }
-        const response = await axios.post('http://localhost:3000/files', formData, options)
+        const response = await axios.post('/api/files', formData, options)
         const fileID = response.data[0]
         if (!fileID) return
         console.log(fileID)

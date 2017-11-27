@@ -71,7 +71,7 @@ export default class Profile extends Component {
                 formData.append("file", this.state.image)
 
                 axios
-                    .post('http://localhost:3000/files', formData, {
+                    .post('/api/files', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }

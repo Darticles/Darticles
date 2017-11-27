@@ -86,7 +86,7 @@ export default class HomeAuction extends Component {
             return {
                 creator     : artwork[0],
                 artworkOwner: artwork[1],
-                imageLink   : "http://localhost:8080/ipfs/" + artwork[2],
+                imageLink   : "/ipfs/" + artwork[2],
                 title       : web3.toUtf8(artwork[3]),
                 description : web3.toUtf8(artwork[4]),
                 state       : web3.toUtf8(artwork[5]),

@@ -55,7 +55,7 @@ export default class ArtworkDetail extends Component {
         const artwork = {
             creator: _artwork[0],
             artworkOwner: _artwork[1],
-            imageLink: "http://localhost:8080/ipfs/" + _artwork[2],
+            imageLink: "/ipfs/" + _artwork[2],
             title: web3.toUtf8(_artwork[3]),
             description: web3.toUtf8(_artwork[4]),
             state: web3.toUtf8(_artwork[5])
