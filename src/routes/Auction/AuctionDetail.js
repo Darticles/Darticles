@@ -149,6 +149,25 @@ export default class AuctionDetail extends Component {
         })
     }
 
+    closeAuction() {
+        const defaultAccount = this.props.defaultAccount
+        const darticlesInstance = this.props.darticlesInstance
+        const auction = this.state.auction
+
+        darticlesInstance
+        .endAuction(auction.auctionID, {
+            from: defaultAccount,
+        })
+        .then(function (response) {
+            console.log(response)
+            document.location = "/portfolio"
+        }.bind(this))
+        .catch(function (error) {
+            console.log(error)
+        })
+
+    }
+
     postBid() {
         const defaultAccount = this.props.defaultAccount
         const darticlesInstance = this.props.darticlesInstance
@@ -195,7 +214,9 @@ export default class AuctionDetail extends Component {
                 color: "red"
             }}>
                 You are Winning! <br/>
-                <Button>Close Auction</Button>
+                <Button onClick={this
+                    .closeAuction
+                    .bind(this)}>Close Auction</Button>
             </div>
         )
     }
