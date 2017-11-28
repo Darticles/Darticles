@@ -22,7 +22,7 @@ import Darticles from '../../../build/contracts/Darticles.json'
 import promisify from '../../utils/promisify'
 import BigNumber from 'bignumber.js'
 
-export default class ArtworkDetail extends Component {
+export default class AuctionDetail extends Component {
 
     constructor(props) {
         super(props)
@@ -30,16 +30,19 @@ export default class ArtworkDetail extends Component {
             editing: false
         }
     }
-    
+
     async getCurrentBid(auction) {
         const defaultAccount = this.props.defaultAccount
         const darticlesInstance = this.props.darticlesInstance
         const {web3} = this.props
 
-        const _bid = await darticlesInstance.getCurrentBidForAuctionWithID.call(auction.auctionID, {from: defaultAccount})
+        const _bid = await darticlesInstance
+            .getCurrentBidForAuctionWithID
+            .call(auction.auctionID, {from: defaultAccount})
+
         const bid = {
-            from : _bid[0],
-            value : _bid[1]
+            from: _bid[0],
+            value: web3.fromWei(_bid[1])
         }
 
         return bid
@@ -51,7 +54,9 @@ export default class ArtworkDetail extends Component {
         const {web3} = this.props
         //Load artworks for auctions
 
-        const _artwork = await darticlesInstance.getArtworkWithID.call(auction.artworkID, {from: defaultAccount})
+        const _artwork = await darticlesInstance
+            .getArtworkWithID
+            .call(auction.artworkID, {from: defaultAccount})
         const artwork = {
             creator: _artwork[0],
             artworkOwner: _artwork[1],
@@ -65,7 +70,7 @@ export default class ArtworkDetail extends Component {
     }
 
     async initialize() {
-        const {web3} = this.props
+        const {web3, darticlesInstance} = this.props
 
         const r = await this.retrieveAuction()
         console.log(r)
@@ -85,10 +90,10 @@ export default class ArtworkDetail extends Component {
 
         this.setState({
             ...this.state,
-            auction, 
+            auction,
             artwork,
             current_bid,
-            ready: true
+            ready: true,
         })
     }
 
@@ -106,14 +111,41 @@ export default class ArtworkDetail extends Component {
     }
 
     componentWillMount() {
-        this.initialize()
+
+        const darticlesInstance = this.props.darticlesInstance
+        
+        const filter = darticlesInstance.LogNewBid({}, {
+            fromBlock: 0,
+            toBlock: 'latest'
+        })
+
+        const self = this;
+        var newBidEvent = filter.watch((error, result) => {
+            if (!error) {
+                //address sender, uint256 value
+                const current_bid = {
+                    from: result[0],
+                    value: result[1],
+                }
+                self.setState({
+                    ...self.state,
+                    current_bid
+                })    
+            }
+                console.log('NEW BID EVENT')
+                console.log(error)
+                console.log(result)
+        })
+
+        this.initialize()        
+
     }
 
     onBidValueChanged(event) {
         const value = event.target.value
         this.setState({
             ...this.state,
-            myBid : value
+            myBid: value
         })
     }
 
@@ -125,33 +157,63 @@ export default class ArtworkDetail extends Component {
 
         if (this.state.myBid) {
             const weiValue = web3.toWei(this.state.myBid, 'ether')
-            darticlesInstance.makeBid(auction.auctionID, {from: defaultAccount, value: weiValue}).then(function(response) {
-                console.log(response)
-            }.bind(this)).catch(function(error){
-                console.log(error)
-            })           
+            darticlesInstance
+                .makeBid(auction.auctionID, {
+                    from: defaultAccount,
+                    value: weiValue
+                })
+                .then(function (response) {
+                    console.log(response)
+                }.bind(this))
+                .catch(function (error) {
+                    console.log(error)
+                })
         }
     }
 
     getEditingFields() {
         return (
             <Row>
-                <Input label="Bid (Ether)" type="number" s={6} onChange={this.onBidValueChanged.bind(this)}/>
-                <Button onClick={this.postBid.bind(this)}>Make Bid</Button>
+                <Input
+                    label="Bid (Ether)"
+                    type="number"
+                    s={6}
+                    onChange={this
+                    .onBidValueChanged
+                    .bind(this)}/>
+                <Button
+                    onClick={this
+                    .postBid
+                    .bind(this)}>Make Bid</Button>
             </Row>
         )
+    }
+
+    winningMessage() {
+        return (
+            <div style={{
+                color: "red"
+            }}>
+                You are Winning! <br/>
+                <Button>Close Auction</Button>
+            </div>
+        )
+    }
+
+    getBidComponent() {
+        return (this.state.current_bid.from.toLowerCase() == this.props.defaultAccount.toLowerCase()
+            ? this.winningMessage()
+            : this.getEditingFields())
     }
 
     getDetail() {
         const {auction} = this.state
         const {title, description, imageLink} = this.state.artwork
 
-        const editingFields = this.getEditingFields()
-        
         return (
             <Row>
-                <Col s={1}></Col>
-                <Col s={10}>
+                <Col s={2}></Col>
+                <Col s={8}>
                     <Card
                         header={< CardTitle reveal image = {
                         imageLink
@@ -159,13 +221,12 @@ export default class ArtworkDetail extends Component {
                     waves = 'light' />}
                         title={`${title.toUpperCase()} - ${description}`}>
 
-                    {"Current Bid: " + this.state.current_bid.value}
-                    { editingFields }
-
+                        {"Current Bid: " + this.state.current_bid.value + ' ETH'}
+                        {this.getBidComponent()}
                     </Card>
 
                 </Col>
-                <Col s={1}></Col>
+                <Col s={2}></Col>
             </Row>
         )
     }

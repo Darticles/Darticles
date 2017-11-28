@@ -132,7 +132,7 @@ contract Darticles {
         in order to avoid issues related with send/transfer done in place
     */
     function withdraw(uint256 _amount) public returns (bool) {
-        require(refundsFor[msg.sender] >= _amount);
+        require(_amount <= refundsFor[msg.sender]);
         refundsFor[msg.sender] -= _amount;
         msg.sender.transfer(_amount);
         return true;
@@ -223,7 +223,7 @@ contract Darticles {
 
         require(currentBidForAuctionWithID[_auctionID].sender == msg.sender);
         require(auction.state == AuctionState.Active);
-        require(now > auction.endTimestamp);
+        //require(now > auction.endTimestamp);
         auction.state = AuctionState.Ended;
         
         var bidValue = currentBidForAuctionWithID[_auctionID].value;
@@ -253,7 +253,7 @@ contract Darticles {
         require(msg.value >= _auction.initialPrice);
         require(msg.value > currentBidForAuctionWithID[_auctionID].value);
         
-        refundsFor[currentBidForAuctionWithID[_auctionID].sender] = currentBidForAuctionWithID[_auctionID].value;
+        refundsFor[currentBidForAuctionWithID[_auctionID].sender] += currentBidForAuctionWithID[_auctionID].value;
         
         var bid = Bid({
             sender: msg.sender,
