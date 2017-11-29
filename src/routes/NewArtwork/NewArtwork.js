@@ -78,12 +78,14 @@ export default class NewArtwork extends Component {
                         <input
                             className="full-width"
                             placeholder="Title"
+                            maxLength="32"                            
                             onChange={this.onTextChanged("title").bind(this)} />
                         <input
                             className="full-width"
                             rows="4"
                             cols="50"
                             placeholder="Description"
+                            maxLength="32"                            
                             onChange={this.onTextChanged("description").bind(this)} />
                         <Button onClick={this.onSubmitPressed.bind(this)}>
                             Submit

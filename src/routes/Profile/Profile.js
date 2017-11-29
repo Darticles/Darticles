@@ -125,6 +125,7 @@ export default class Profile extends Component {
                             }}
                                 className="full-width"
                                 placeholder="First Name"
+                                maxlength="32"
                                 value={this.state.firstName}
                                 onChange={this
                                 .onTextChanged("firstName")
@@ -135,6 +136,7 @@ export default class Profile extends Component {
                             }}
                                 className="full-width"
                                 placeholder="Last Name"
+                                maxLength="32"                                
                                 value={this.state.lastName}
                                 onChange={this
                                 .onTextChanged("lastName")
@@ -145,6 +147,7 @@ export default class Profile extends Component {
                             }}
                                 className="full-width"
                                 placeholder="Nickname"
+                                maxLength="32"                                
                                 value={this.state.nickName}
                                 onChange={this
                                 .onTextChanged("nickName")
