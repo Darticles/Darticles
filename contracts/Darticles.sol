@@ -84,6 +84,7 @@ contract Darticles {
     mapping(address => uint256[]) private auctionsOf;            //
     mapping(uint256 => Bid) private currentBidForAuctionWithID;  //
 
+    uint256 qtyOfActiveAuctions;
     uint256[] private activeAuctions;                                  //
     uint256[] private endedAuctions;
 
@@ -209,6 +210,8 @@ contract Darticles {
         auctionsOf[msg.sender].push(auctionID);
         auctionWithID[auctionID] = auction;
 
+        qtyOfActiveAuctions++;
+
         var _artwork = artwork[_artworkID];
         _artwork.state = ArtworkState.InAuction;
 
@@ -237,11 +240,12 @@ contract Darticles {
         var bidValue = currentBidForAuctionWithID[_auctionID].value;
         
         endedAuctions.push(_auctionID);
-        if (activeAuctions.length > 1) {
-            activeAuctions[index] = activeAuctions[activeAuctions.length - 1];
-            delete activeAuctions[activeAuctions.length - 1];
-            activeAuctions.length--;
+        if (qtyOfActiveAuctions > 1) {
+            activeAuctions[index] = activeAuctions[qtyOfActiveAuctions - 1];
+            delete activeAuctions[qtyOfActiveAuctions - 1];
+            qtyOfActiveAuctions--;
         } else {
+            qtyOfActiveAuctions = 0;
             activeAuctions = new uint256[](0);
         }
 
