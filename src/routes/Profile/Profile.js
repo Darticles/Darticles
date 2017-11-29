@@ -18,6 +18,13 @@ export default class Profile extends Component {
         }
     }
 
+    validateAlphaNumeric(text){
+        if( /[^a-zA-Z0-9\-\/]/.test( text ) ) {
+            return false;
+        }
+        return true;     
+    }
+
     onImageSelected(image) {
         this.setState({
             ...this.state,
@@ -67,6 +74,21 @@ export default class Profile extends Component {
         // TODO: Add logic to upload image And then go back to porfolio
         if (this.state.image) {
             if (this.state.firstName && this.state.lastName && this.state.nickName) {
+
+                if (!this.validateAlphaNumeric(this.state.firstName)) {
+                    alert('First name must be alphanumeric'); 
+                    return                   
+                }
+                if (!this.validateAlphaNumeric(this.state.lastName)) {
+                    alert('Last name must be alphanumeric');   
+                    return;                 
+                }
+                if (!this.validateAlphaNumeric(this.state.nickName)) {
+                    alert('Nick name must be alphanumeric'); 
+                    return                   
+                }
+
+
                 var formData = new FormData();
                 formData.append("file", this.state.image)
 

@@ -26,6 +26,13 @@ export default class NewArtwork extends Component {
         }
     }
 
+    validateAlphaNumeric(text){
+        if( /[^a-zA-Z0-9\-\/]/.test( text ) ) {
+            return false;
+        }
+        return true;     
+    }
+
     onImageSelected(image) {
         this.setState({
             ...this.state,
@@ -47,6 +54,15 @@ export default class NewArtwork extends Component {
         const { darticlesInstance, defaultAccount } = this.props
 
         if (!(image && title && description)) return
+
+        if (!this.validateAlphaNumeric(title)) {
+            alert('Title must be alphanumeric'); 
+            return                   
+        }
+        if (!this.validateAlphaNumeric(description)) {
+            alert('Description must be alphanumeric'); 
+            return                   
+        }
 
         let formData = new FormData();
         formData.append("file", image)
