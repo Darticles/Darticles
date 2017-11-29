@@ -159,7 +159,15 @@ contract Darticles {
         require (index < portfolioOf[_from].length); // The artwork was not found
         artwork[_id].owner = _to;
         portfolioOf[_to].push(_id);
-        delete(portfolioOf[_from][index]);
+        // delete(portfolioOf[_from][index]);
+
+        if (portfolioOf[_from].length > 1) {
+            portfolioOf[_from][index] = portfolioOf[_from][portfolioOf[_from].length - 1];
+            delete portfolioOf[_from][portfolioOf[_from].length - 1];
+            portfolioOf[_from].length--;
+        } else {
+            portfolioOf[_from] = new uint256[](0);
+        }
     }
     
     function getIndexForArtworkInSenderPortfolio(address _sender, uint256 _id) private view returns (uint256) {
