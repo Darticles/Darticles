@@ -46,4 +46,4 @@ Whenever a bid is replaced for a bigger one, the bid sender is returned the bid 
 ## About
 
 * Fernando Martín Ortiz
-* Hernan Luis Paez
+* Luis Hernan Paez
