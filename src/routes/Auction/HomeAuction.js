@@ -41,7 +41,10 @@ export default class HomeAuction extends Component {
         return this
             .loadAuctions()
             .then((auctions) => {
-                this.setState({...this.state, auctions})
+                this.setState({
+                    ...this.state,
+                    auctions
+                })
             })
             .catch(function (error) {
                 console.log(error)
@@ -53,7 +56,9 @@ export default class HomeAuction extends Component {
         const darticlesInstance = this.props.darticlesInstance
         //Get Auction Details
         return Promise.all(auctions.map((id) => {
-            return darticlesInstance.getAuctionWithID.call(id, {from: defaultAccount})
+            return darticlesInstance
+                .getAuctionWithID
+                .call(id, {from: defaultAccount})
         }))
     }
 
@@ -64,12 +69,12 @@ export default class HomeAuction extends Component {
             // auction.owner, auction.artworkID, auction.initialPrice, auction.endTimestamp,
             // auctionState
             return {
-                owner           : r[0], 
-                artworkID       : r[1], 
-                initialPrice    : r[2], 
-                endTimestamp    : r[3], 
-                auctionState    : web3.toUtf8(r[4]),
-                auctionID       : r[5]
+                owner: r[0],
+                artworkID: r[1],
+                initialPrice: r[2],
+                endTimestamp: r[3],
+                auctionState: web3.toUtf8(r[4]),
+                auctionID: r[5]
             }
         })
 
@@ -79,17 +84,17 @@ export default class HomeAuction extends Component {
     async loadArtworks(auctions) {
         const defaultAccount = this.props.defaultAccount
         const darticlesInstance = this.props.darticlesInstance
-        const { web3 } = this.props
+        const {web3} = this.props
         //Load artworks for auctions
         const _artworks = await Promise.all(auctions.map((auction) => darticlesInstance.getArtworkWithID.call(auction.artworkID, {from: defaultAccount})))
         const artworks = _artworks.map((artwork) => {
             return {
-                creator     : artwork[0],
+                creator: artwork[0],
                 artworkOwner: artwork[1],
-                imageLink   : "http://localhost:8080/ipfs/" + artwork[2],
-                title       : web3.toUtf8(artwork[3]),
-                description : web3.toUtf8(artwork[4]),
-                state       : web3.toUtf8(artwork[5]),
+                imageLink: "http://localhost:8080/ipfs/" + artwork[2],
+                title: web3.toUtf8(artwork[3]),
+                description: web3.toUtf8(artwork[4]),
+                state: web3.toUtf8(artwork[5])
             }
         })
         return auctions.map((auction, index) => {
@@ -109,7 +114,9 @@ export default class HomeAuction extends Component {
         console.log(`Darticles instance address: ${darticlesInstance.address}`)
 
         //Get Active Auctions
-        return darticlesInstance.getActiveAuctions.call({from: defaultAccount})
+        return darticlesInstance
+            .getActiveAuctions
+            .call({from: defaultAccount})
             .then(this.getAuctionsDetails.bind(this))
             .then(this.parseAuctionsResponse.bind(this))
             .then(this.loadArtworks.bind(this))
@@ -129,18 +136,29 @@ export default class HomeAuction extends Component {
         const cells = auctions.map((auction, index) => this.createAuctionCell(auction, index))
 
         return (
-            <Row>
-                <Col s={1}></Col>
-                <Col s={10}>
-                    { cells }
-                </Col>
-                <Col s={1}></Col>
-            </Row>
+            <div style={{
+                margin: "20px"
+            }}>
+                <Row>
+                    <Col s={1}></Col>
+                    <Col s={10}>
+                        {auctions.length > 0
+                            ? cells
+                            : <div className="center-text">There aren't any auction right now</div>}
+                    </Col>
+                    <Col s={1}></Col>
+                </Row>
+            </div>
         )
     }
 
     createAuctionCell(auction, index) {
-        return (<AuctionCell onClick={this.auctionCellPressed.bind(this)} auction={auction} key={index} />)
+        return (<AuctionCell
+            onClick={this
+            .auctionCellPressed
+            .bind(this)}
+            auction={auction}
+            key={index}/>)
     }
 
 }

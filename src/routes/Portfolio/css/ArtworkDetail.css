@@ -8,3 +8,8 @@
     max-width:100%;
     object-fit: contain;
 }
+
+.center-text {
+    text-align: center;
+    align-items: center;
+}

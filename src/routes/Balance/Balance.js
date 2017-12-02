@@ -43,7 +43,21 @@ export default class Balance extends Component {
         try {
             const {web3} = this.props
             const amountInWei = web3.toWei(withdrawAmount, 'ether')            
-            await darticlesInstance.withdraw(amountInWei, { from: defaultAccount })
+            await darticlesInstance.withdraw(amountInWei, { from: defaultAccount, gas: 5131607, })
+            this.fetchBalance()
+        } catch (error) {
+            console.log(`Something went wrong when trying to withdraw ether. Error => ${error}`)
+        }
+    }
+
+
+    async onWithdrawAllClick() {
+        const { balance } = this.state
+        const { darticlesInstance, defaultAccount } = this.props
+        try {
+            const {web3} = this.props
+            const amountInWei = web3.toWei(balance, 'ether')            
+            await darticlesInstance.withdraw(amountInWei, { from: defaultAccount, gas: 5131607, })
             this.fetchBalance()
         } catch (error) {
             console.log(`Something went wrong when trying to withdraw ether. Error => ${error}`)
@@ -61,6 +75,7 @@ export default class Balance extends Component {
                     <Input type="number" label="Amount (ETH)" onChange={this.onAmountChange.bind(this)} />
                     <br />
                     <Button waves="light" onClick={this.onWithdrawClick.bind(this)} >Withdraw</Button>
+                    <Button waves="light" onClick={this.onWithdrawAllClick.bind(this)} >Withdraw All</Button>
                 </Col>
                 <Col s={1}></Col>
             </Row>

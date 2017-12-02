@@ -38,7 +38,8 @@ export default class ArtworkDetail extends Component {
             owner: response[1],
             imageLink: "http://localhost:8080/ipfs/" + response[2],
             title: web3.toUtf8(response[3]),
-            description: web3.toUtf8(response[4])
+            description: web3.toUtf8(response[4]),
+            state: web3.toUtf8(response[5])
         }
 
         this.setState({
@@ -128,12 +129,16 @@ export default class ArtworkDetail extends Component {
 
     }
 
+    getButton() {
+        return (
+            this.state.artwork.state === "Available" ? <Button onClick={this.startEditingAuction.bind(this)} key="0">Start an auction</Button> : <div/>
+        )
+    }
+
     getDetail() {
         const { artwork, editing } = this.state
-        const { imageLink, title, description } = artwork
+        const { imageLink, title, description, state } = artwork
         
-        const startAuctionAction =  (<Button onClick={this.startEditingAuction.bind(this)} key="0">Start an auction</Button>)
-
         const placeAuctionAction = (<Button onClick={this.placeAuction.bind(this)} key="0">Place auction</Button>)
         const cancelAction = (<Button onClick={this.cancelAuctionPlace.bind(this)} className="red" key="1">Cancel</Button>)
 
@@ -147,7 +152,7 @@ export default class ArtworkDetail extends Component {
                         header={<CardTitle reveal 
                         image={ imageLink } waves='light'/>}
                         title={`${title.toUpperCase()} - ${description}`}
-                        actions={editing ? [placeAuctionAction, cancelAction] : [startAuctionAction]} >
+                        actions={editing ? [placeAuctionAction, cancelAction] : [this.getButton()]} >
 
                         { editingFields }
                     </Card>

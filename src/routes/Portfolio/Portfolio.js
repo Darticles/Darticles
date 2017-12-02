@@ -107,14 +107,16 @@ export default class Portfolio extends Component {
                 margin: "20px"
             }}>
                 <Row>
-                    {artworkCells}
+                    {this.state.artworks.length > 0 ? artworkCells : <div className="center-text">There is no artworks in your portfolio</div>} 
                 </Row>
+                <div className="center-text">
                 <Button
                     waves='light'
                     onClick={this
                     .newArtworkCellPressed
                     .bind(this)}>
                     <Icon left>add</Icon>Add New Artwork</Button>
+                    </div>
             </div>
         )
     }

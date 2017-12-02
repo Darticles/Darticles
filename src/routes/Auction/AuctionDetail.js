@@ -22,6 +22,8 @@ import Darticles from '../../../build/contracts/Darticles.json'
 import promisify from '../../utils/promisify'
 import BigNumber from 'bignumber.js'
 
+import './css/HomeAuction.css'
+
 export default class AuctionDetail extends Component {
 
     constructor(props) {
@@ -157,6 +159,7 @@ export default class AuctionDetail extends Component {
         darticlesInstance
         .endAuction(auction.auctionID, {
             from: defaultAccount,
+            gas: 5131607,
         })
         .then(function (response) {
             console.log(response)
@@ -183,6 +186,7 @@ export default class AuctionDetail extends Component {
                 })
                 .then(function (response) {
                     console.log(response)
+                    document.location = "/auctions"                    
                 }.bind(this))
                 .catch(function (error) {
                     console.log(error)
@@ -227,7 +231,31 @@ export default class AuctionDetail extends Component {
             : this.getEditingFields())
     }
 
+    getInitialPriceText() {
+        const {web3} = this.props        
+        return (
+            <div>
+                <b>{this.state.auction.initialPrice > 0 ? "Initial Price: "+ web3.fromWei(this.state.auction.initialPrice) + " ETH" : ""}</b>
+            </div>
+        )
+    }
+
+    getCurrentBidText() {
+        return(
+            "Current Bid: " + this.state.current_bid.value + ' ETH'
+        )
+    }
+
+    getOwnerComponent() {
+        return (
+            <p>
+                {this.state.artwork.owner ? "Owner: " + this.state.artwork.owner : ""}
+            </p>
+        )
+    }
+
     getDetail() {
+        const {web3} = this.props
         const {auction} = this.state
         const {title, description, imageLink} = this.state.artwork
 
@@ -236,13 +264,12 @@ export default class AuctionDetail extends Component {
                 <Col s={2}></Col>
                 <Col s={8}>
                     <Card
-                        header={< CardTitle reveal image = {
+                        header={< CardTitle image = {
                         imageLink
                     }
                     waves = 'light' />}
                         title={`${title.toUpperCase()} - ${description}`}>
-
-                        {"Current Bid: " + this.state.current_bid.value + ' ETH'}
+                        {this.getInitialPriceText()} {this.getCurrentBidText()}
                         {this.getBidComponent()}
                     </Card>
 
